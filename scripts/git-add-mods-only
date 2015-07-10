@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# git extension:
+# Add all modified files only, not new/deletions 
+#
+
+git diff-files -z --diff-filter=M --name-only | xargs -0 git add

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#
+# git extension:
+# Track all available branches from the origin
+#
+
+# TODO: check for $1 -- if not present, offer remotes/origin as default, check that given origin exists
+
+
+for branch in `git branch -a | grep remotes/origin | grep -v HEAD | grep -v master`; do
+    git branch --track ${branch##*/} $branch
+done

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+DEFAULT=Y
+CURRENT=`git branch | sed -n '/\* /s///p'`
+ACTION=NONE
+
+for branch in `git branch | awk -F ' +' '! /\(no branch\)/ {print $2}' | grep -v $CURRENT | grep -v master`; do
+
+  HASREMOTE=""
+  HASREMOTE=`git for-each-ref --format='%(refname:short):%(upstream:short)' refs/heads | grep "^${branch}:.*/" | sed "s/^${branch}://"`
+  if [ "$HASREMOTE" != "" ] ; then
+    printf "Remove the local copy of the branch ->> ${branch} <<- ? Yes/(N)o/Cancel? "
+    read -s -n 1 key
+    if [[ "$key" == "" ]] ; then
+      ACTION=SKIP
+    fi
+    if [[ "$key" == "y" || "$key" == "Y" ]] ; then
+      ACTION=REMOVE
+    fi
+    if [[ "$key" == "n" || "$key" == "N" ]] ; then
+      ACTION=SKIP
+    fi
+    if [[ "$key" == "c" || "$key" == "C" ]] ; then
+      echo "Operation cancelled."
+      echo
+      exit;
+    fi
+
+    if [ "$ACTION" = "SKIP" ] ; then
+      echo    
+      echo "Local branch ${branch} left untouched."
+      echo
+    fi
+
+    if [ "$ACTION" = "REMOVE" ] ; then
+      git config --unset branch.${branch}.remote
+      git config --unset branch.${branch}.merge
+
+      git branch -D $branch
+    
+      echo
+      echo "The local copy of the branch ${branch} removed."
+      echo
+    fi
+  fi
+
+done

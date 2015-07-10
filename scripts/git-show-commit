@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#
+# git extension:
+# Check that the given commit is valid in the current repo,
+# then display details for that commit in abbreviated format
+#
+
+(git rev-parse --git-dir >/dev/null 2>&1)
+
+if [ $? -ne 0 ] ; then
+
+  echo "Not in a git repo"
+
+else
+
+  FIRST=`git log --pretty=format:%H | tail -1`
+  HEAD=`git rev-parse --verify HEAD`
+
+  if [ "${FIRST}" = "${FIRST/${1}/}" ] ; then
+ 
+    (git merge-base --is-ancestor $1 $HEAD >/dev/null 2>&1)
+
+    if [ $? -ne 0 ] ; then
+      echo "Not a valid commit (invalid SHA or not a descendent)"
+    else
+      git log --name-status --diff-filter="ACDMRT" -1 -U ${1}
+    fi
+    
+  else
+    
+    git log --name-status --diff-filter="ACDMRT" -1 -U $FIRST
+    
+  fi
+  echo 
+
+fi

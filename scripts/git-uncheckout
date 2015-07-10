@@ -1,0 +1,20 @@
+#!/bin/bash
+
+CURRENT=`git branch | sed -n '/\* /s///p'`
+
+if [ "$1" = $CURRENT ] ; then
+  echo "Cannot untrack currently active branch. Change to a different branch first."
+  exit 1
+fi
+
+git show-ref --verify --quiet refs/heads/$1
+if [[ $? == 0 ]]; then
+  git config --unset branch.${1}.remote
+  git config --unset branch.${1}.merge
+
+  git branch -D $1
+
+  echo "Local copy of the remote branch ${1} removed."
+else
+  echo "Branch $1 does not exist."
+fi

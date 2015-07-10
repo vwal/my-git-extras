@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#
+# git extension:
+# show remote tracked branches for the local branches
+#
+
+(git rev-parse --git-dir >/dev/null 2>&1)
+
+if [ $? -ne 0 ] ; then
+
+  echo "Not in a git repo"
+
+else
+
+  if [ -z "$(git remote)" ]; then
+
+    echo "This branch doesn't have any remotes defined."
+
+  else
+
+    git for-each-ref --format='%(upstream:short)' $(git symbolic-ref -q HEAD)
+  
+  fi
+
+fi

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#
+# git extension:
+# Create a tar-archive of the current repo in the parent directory
+#
+
+DATETIME=`date "+%Y%m%d_%H%M"`
+
+ORIGDIR=${PWD##*/}
+PARENT=`dirname $PWD`
+
+tar -C $PARENT -cf ../git_panic_${DATETIME}.tar $ORIGDIR
+echo "Panicfile git_panic_${DATETIME}.tar stored in the parent (${PARENT})."
+echo

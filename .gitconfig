@@ -1,0 +1,420 @@
+[user]
+	name = Ville Walveranta
+	email = ville@walveranta.org
+[color]
+	ui = auto
+	status = auto
+	diff = auto
+	branch = auto
+	interactive = auto
+[alias]
+	
+	#add a tag to the current commit
+	  addtag = tag -a 
+	  deltag = tag -d
+	  pushtags = push origin --tags
+
+	#force push (e.g. to reset remote to a specific commit after local reset --hard <hash>); req <remote> <lb>:<rb> as params
+	  pushard = push -f
+
+	#clone a respository and init its submodules
+          cl = clone --recursive
+
+	#ABBR: cherry-pick	
+          cp = cherry-pick
+
+	#EXT (git-whistles/git-stash-and-checkout): stash current changes, checkout new branch, unstash changes for that branch
+          co = stash-and-checkout
+	#EXT (my-git-extras/git-checkout-all): track all available branches from the origin
+	  ca = checkout-all
+
+	#ABBR: branch
+          br = branch
+	#show local and remote branches a commit (SHA) occurs in
+	  c2b = branch -a --contains
+	#find commits by Author (partial match is ok)
+	  author = "!f() { git log --all --author=$1; }; f"
+
+	#create a new branch, set up it's upstream, start tracking it, and check it out'
+	#use this also to checkout a remote branch: [localbranchname] [remotebranchname]
+          tbr = checkout --track -b
+	#create a new branch and check it out, local only (no upstream) 
+          lbr = checkout --no-track -b
+        #EXT (my-git-extrash/git-publish-branch): publish an existing local branch to remote, and start tracking it
+          pub = publish-branch
+        #set remote upstream for an existing local branch
+	  setrem = branch --set-upstream-to
+        #unset remote upstrem for an existing local branch
+ 	  unsetrem = branch --unset-upstream
+	#drop (delete) a branch irrespecive of its merge status (be careful!)
+	  dropbr = branch -D
+
+	#EXT (my-git-extras/git-uncheckout): uncheckout a remote branch (cannot be current) to remove from local 
+          unco = uncheckout
+	#EXT (my-git-extras/git-uncheckout-interactive): uncheckout remote branches interactively (to choose which ones to remove/keep on local)
+          uncoint = uncheckout-interactive
+	#checkout master branch
+          master = checkout master
+
+	#ABBR: blame
+          bl = blame
+	#invoke graphical blame for the given file (it can also be accessed via gitk)
+	  gbl = gui blame
+
+	#display last commit date/committer for each local or tracked remote branch
+          llb = "!f(){ git status -sb;git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)  (%(authorname))'; };f"
+
+        #display the last commit for the given branch (or current if not given)
+	  llv = branch -lvv
+
+	#ABBR: remote
+	  rem = remote
+	#show fetch/push URLs
+	  srem = remote -v
+	#set remote URL (requires remote URL, e.g. git@github.com:/USERNAME/OTHERREPO.git)
+	  rsu = remote set-url origin 
+
+	#EXT (my-git-extras/git-show-remote-branch): show remote(s) for the current branch 
+          rembr = show-remote-branch
+	#show remote tracked branches for the local branches
+        #TODO: convert this into a script; detect "no remotes"
+          rems = for-each-ref --format='%(refname:short) <- %(upstream:short)' refs/heads
+	#EXT (my-git-extras/git-show-tags): show tags
+	  tags = show-tags
+	#show known remotes
+          remotes = remote -v
+        #list remote-tracking and local branches
+          lab = branch --all
+	#show trackable branches and their statuses on the repo's remote
+          rso = remote show origin
+          rsop = config --get remote.origin.url
+        #update remote refs and display branches that got updated
+          ru = remote -v update
+
+	#ABBR: rev-parse
+          rp = rev-parse
+
+	#ABBR: rebase
+          rb = rebase
+
+	#interactive rebase for the given upstream
+          irbu = rebase -i @{u}
+	#interactive rebase to squash [previous] commits to the head
+          irbh = "!f(){ git rebase -i HEAD~$1; };f"
+
+	#ABBR: difftool (use default configured, i.e. Beyond Compare)
+	  dt = difftool
+	#show unstaged changes
+	  dtd = difftool --dir-diff
+	#use vimdiff in console as a difftool
+	  dtt = difftool --tool=vimdiff
+	#ABBR: mergetool
+	  mt = mergetool
+	#use vimdiff in console as mergetool
+	  mtt = mergetool --tool=vimdiff
+
+	#abort rebase operation (stopped due to conflicts)
+	  rba = rebase --abort
+	#continue rebase operation after merging
+          rbc = rebase --continue
+
+	#EXT (my-git-extras/git-remote-updates): show updates on remote since the last common ancestor
+          rup = remote-updates
+	#as above, but with patches
+          rupp = remote-updates -p
+
+	#show local commits not yet pushed to the remote (synonmous to outlog?)
+	#  unpushed = !LB=$(git rev-parse --abbrev-ref HEAD) && RB=$(git show-remote-branch) && git lfs "\"$RB\"".."\"$LB\""
+
+	#show changes to upstream
+	  statup = !git remote update -p && git diff --stat @{u}
+
+	#show diff from local to upstream (not yet pushed)
+	  outlog = !git lfs @{u}..
+	#show diff from upstream to local (not yet merged)
+	  inlog = !git remote update -p && git lfs ..@{u}
+
+	#simulate push
+	  outgoing = push --dry-run
+	#simulate fetch
+	  incoming = fetch --dry-run
+
+	#ABBR: whatchanged
+	  wch = whatchanged
+	#whatchanged with patches
+	  wchp = whatchanged -p
+
+	#whatchanged in the remote of this branch
+	  remch = !RE=$(git show-remote-branch) && git remote update -p && git whatchanged "\"$RE\""
+	#whatchanged in the remote of this branch (show patches)
+	  remchp = !RE=$(git show-remote-branch) && git remote update -p && git whatchanged -p "\"$RE\""
+	#remote log
+	  reml = !RE=$(git show-remote-branch) && git remote update -p && git lfs "\"$RE\""
+	#remote log with patches
+	  remlp = !RE=$(git show-remote-branch) && git remote update -p && git lfs -p "\"$RE\""
+
+	#ABBR: merge
+	  mg = merge
+
+	#test merge against given branch to see if it would merge without conflicts (nothing is done)
+          mergetest = "!f(){ git merge --no-commit --no-ff $1; git merge --abort; echo 'Merge aborted'; };f "
+
+	#merge, require fast-forwardable (or HEAD to be good as-is)
+          meff = merge --ff-only
+        #pull (fetch + merge) from remote, require fast-forwardable (or HEAD to be good as-is); explicitly no rebasing (merge instead)
+	  puff = pull --ff --ff-only --no-rebase
+        #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote
+	  purr = pull --ff --ff-only --rebase
+	
+	#ABBR: fetch
+	  f = fetch
+
+	#ABBR: stash
+          ss = stash
+
+	#drop the [last item] in stash
+          ssdr = stash drop 
+        #create a new branch out of stash (branchname required, stash number optional - uses last if not defined)
+	  ssbr = stash branch 
+        #stash all changes on tracked files, from the top of the work tree
+          ssr = stash --keep-index
+        #stash all changes, including untracked files
+          ssu = stash --include-untracked
+        #stash all changes, including untracked and ignored files 
+          ssa = stash --all
+        #stash interactively (since HEAD)
+	  ssi = stash --patch
+        #apply and remove the given (or latest) stash state
+	  ssp = stash pop
+        #list stashes
+          ssl = stash list
+        #display stash contents
+	  ssls = stash show -p
+
+        #ABBR: add
+          a = add
+
+        #stage all changes
+          aa = add -A :/
+        #stage modifications and new (not deletions)
+          amodnew = add --ignore-removal .
+	#stage modifications and deletions (not new)
+          amoddel = add -u
+        #EXT (my-git-extras/git-add-mods-only): stage modifications only (not new/dels)
+          amod = add-mods-only
+
+	#ABBR: revert (creates patches to revert given SHAs or range such as 0766c053..HEAD; does not auto-commit the reversion patches)
+          rev = revert --no-commit --no-edit
+
+        #remove staged entries (make them unstaged again; does not revert!)
+          res = reset
+          unstage = reset
+
+        #ABBR: remove
+          rm = remove
+
+	#remove from index all deleted files that were deleted with OS rm, and not with ´git rm´.
+          rma = !git ls-files -z --deleted | xargs -0 git rm
+	#remove previuosly tracked item from index so that it can be .gitignored (NOTE: COMMIT ANY CHANGES FIRST!)
+	  untrack = git rm --cached
+	#untracks all .gitignored items (NOTE: COMMIT ANY CHANGES FIRST!)
+	  untrackignored = !git rm -r --cached . && git add .
+
+        #commit with a message
+          x = commit -m
+        #add all and commit with a message (doesn't add new files)
+          xa = commit -a -m
+        #stage all and commit in one go
+          ac = "!f(){ git add -A :/; git commit -m \"${*:- }\"; };f"
+	#add the currently staged changes to the most recent commit; do not modify the commit message
+          amend = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
+	#modify commit message for the most recent commit
+	  xm = commit --amend -m
+	#undo the most recent commit (committed items are returned to stage)
+	  xx = reset --soft HEAD~1
+
+	#ABBR: tag
+          t = tag
+
+	#exclude/unexclude files using assume-unchanged
+          aun = update-index --assume-unchanged
+          naun = update-index --no-assume-unchanged
+	#not in index; show untracked files
+          nii = ls-files --others --exclude-standard
+	#EXT (my-git-extras/git-show-ignored): show all ignored, whether assume-unchanged, exclude-standard, or .gitgnore
+          si = show-ignored
+
+	#ABBR: show
+          sh = show
+
+	#show oneline commit log with graph; committer details
+          l = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=relative
+	#show oneline commit log with graph; committer details; full SHA
+          lfs = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --no-abbrev --date=relative
+	#like 'l' but selectable number of output lines as a param        
+	  ln = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=relative -n
+	#show commit log with full detail
+          lna = log --pretty=fuller --decorate --graph 
+	#show commit log with full diff patches
+	  lnap = log --pretty=fuller --decorate --graph --patch
+	#abbreviated (short) commit list
+          lns = log --graph --decorate --pretty=oneline --abbrev-commit
+	#list my commits
+          listmy = !UN=$(git config user.name) && git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --author="\"$UN\"" 
+	#show my commits (number of commits to show as a param)
+	  showmy = !UN=$(git config user.name) && git show --author="\"$UN\"" -n
+	#show files and their statuses in each commit
+          whc = log --name-status
+        #show the affected filenames in the last commit
+	  lastc = show --stat --oneline "HEAD^..HEAD"
+	#show the affected filenames in the previous commit
+	  prevc = show --stat --oneline "HEAD^^..HEAD^"
+	#show the affected filenames in the given commit
+	  aff = show --stat --oneline
+	#show the last commit with full date information 
+          lastdt = log --pretty=fuller --decorate --graph -n 1
+	#very abbreviated view of commits	
+          lcl = log --pretty=oneline --abbrev-commit
+	#show a simple list of the tags
+	  lt = tag -l -n1
+
+	#EXT (my-git-extras/git-show-commit): display details for a commit
+          sc = show-commit 
+	#show simple log with the names of the affected files	
+          sca = log --name-only
+
+        #list summary of files with deletions in the log
+          dels = log --diff-filter=D --summary
+        #list heads in this repo (note: for a remote repo only the heads of the tracked branches are shown)
+          heads = for-each-ref --sort=-committerdate refs/heads/
+
+        #display git repository object file
+          dump = cat-file -p
+
+	#status in short format (including the branch and tracking info)
+          st = status -sb
+	#extended verbose status
+	  #ste = !git remote update -p && git status --long -vv
+	  ste = status --long -vv
+        #show information about files in the index and the working tree
+          ls = ls-files
+
+        #ABBR: diff (without params show changes since index, i.e. since stage, or if no stage exist, since HEAD)
+          df = diff
+        #show changes to the HEAD (staged and unstaged)
+          dfhd = diff HEAD
+        #show changes in HEAD (to the previous commit)
+          lastcm = diff "HEAD^" HEAD        
+	#show diff for staged (cached); show diff between HEAD and stage
+          dfstaged = diff --staged
+        #list file names in stage
+          lstaged = diff --staged --name-only
+        #show staged change statistics by file
+          nstaged = diff --stat
+        #show staged change statistics by directory
+          dstaged = diff --dirstat
+
+	#show filenames affected by a given commit
+	  cfiles = "!f() { git diff --name-status $1^ $1; }; f"
+        #show changes in a specific commit; NOTE: http://stackoverflow.com/a/25395673/134536; NOTE: can also use 'show'
+	  cdiff = "!f() { git diff $1^!; }; f"
+        #show commit log between two given commits
+          logbtwn = "!f() { git log --pretty=format:'* %s' $1..$2; }; f"
+        #show changes in a given commit (SHA)
+          diffin = log -n1 --format=fuller -p
+        #show changes between two given commits (SHAs)
+          diffrange = log --format=fuller -p
+	#search log for commit comments with a given string
+	  findstring = log --pretty=format:'%Cgreen%H %Cblue%s' --name-status --grep
+
+	#EXT (my-git-extras/git-wipe-file): wipe a single file
+	  wipefile = wipe-file
+        #wipe current uncommitted (including staged and untracked) changes; deletes previously untracked!
+          wipeall = reset --hard HEAD
+        #wipe unstaged tracked changes (does not touch staged, tracked or untracked)
+          wipeunstaged = checkout -- .
+        #EXT (my-git-extras/wipe-unstaged): wipe current unstaged (including untracked) changes; deletes untracked!
+          wipeallunstaged = wipe-unstaged
+	#wipe untracked files
+	  wipeu = clean -df
+	#wipe untracked files, including ignored	
+	  wipeux = clean -dfx
+
+        #show the current git configuration (global -> local)
+          thisconf = config --list
+        #show the global git configuration
+          globalconf = config --list --global
+        #show the local git configuration
+          localconf = config --list --local
+	#show currently available git commands
+	  gcom = help -a
+
+        #list defined git aliases
+          lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
+       
+[format]
+	numbered = auto
+[core]
+	legacyheaders = false
+	whitespace = -trailing-space
+	excludesfile = ~/.gitignore
+	editor = joe
+[repack]
+	usedeltabaseoffset = true
+[branch]
+	autosetupmerge = always
+	autosetuprebase = always
+[pager]
+	status = false
+[push]
+	default = tracking
+[rebase]
+	autosquash = true
+[diff]
+	mnemonicprefix = true
+	tool = bc3
+[difftool]
+	prompt = false
+[difftool "bc3"]
+        trustExitCode = true
+        cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\"
+[difftool "vim"]
+        trustExitCode = true
+        cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = bc3
+[mergetool]
+	prompt = false
+	keepBackup = false
+[difftool "vim"]
+	trustExitCode = true
+        cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
+[mergetool "bc3"]
+        trustExitCode = true
+        cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+[mergetool "vim"]
+        trustExitCode = true
+        cmd = vimdiff \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+[url "git@github.com:"]
+	insteadOf = "gh:"
+	pushInsteadOf = "github:"
+	pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+	insteadOf = "github:"
+[url "git@gist.github.com:"]
+	insteadOf = "gst:"
+	pushInsteadOf = "gist:"
+	pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+	insteadOf = "gist:"
+[github]
+	user = vwal
+	token = <SNIP>
+[pretty]
+	solarized = "format:%x1b[30m%h%Creset %s %x1b[36m%d %x1b[93;2m— %ar%x1b[0m"
+	solarized-reflog = "format:%x1b[33m%gd%Creset %gs %x1b[93;2m— %ar%x1b[0m"
+	solarized-parseable = "format:%x1b[30m%h%Creset %x1f%s%x1f %x1b[36m%d %x1b[93;2m— %ar%x1b[0m"
+[clean]
+	requireForce = true
+[credential]
+	helper = cache --timeout 3600

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#
+# git extension:
+# Bundle all branches of the current repository
+# in the parent directory with the repo dir name + date + .bundle
+#
+
+DATETIME=`date "+%Y%m%d_%H%M"`
+
+ORIGDIR=${PWD##*/}
+PARENT=`dirname $PWD`
+
+git bundle create ../${ORIGDIR}_${DATETIME}.bundle --all
+echo "Bundle ${ORIGDIR}_${DATETIME}.bundle containing all branches created in the parent (${PARENT})."
+echo "**NOTE: Any ignored items were not included in the bundle!"
+echo

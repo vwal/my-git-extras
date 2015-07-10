@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#
+# git extension:
+# Show changes in the remote repo since the common ancestor of the local HEAD
+#
+
+git remote update -p
+REMBR=`git show-remote-branch`
+MERGEBASE=`git merge-base HEAD $REMBR`
+REMURL=`git config remote.origin.url`
+REMHEAD=`git rev-parse $REMBR`
+
+git request-pull $MERGEBASE $REMURL $REMHEAD

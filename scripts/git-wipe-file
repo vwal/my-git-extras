@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function ask_yes_or_no() {
+  read -p "$1 (y/N): "
+  case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+    y|yes) echo "yes" ;;
+    *)     echo "no" ;;
+  esac
+}
+
+function delete_file() {
+  if [[ "no" == $(ask_yes_or_no "Delete file?") ]]; then
+    exit 0
+  else
+    rm $1
+    echo "File deleted."
+    exit 0
+  fi
+}
+
+if [ -f $1 ]; then
+  git ls-files $1 --error-unmatch >/dev/null 2>&1
+  if [[ $? == 0 ]]; then
+    git reset $1 >/dev/null 2>&1 
+    git checkout -- $1 >/dev/null 2>&1
+    echo
+    echo "Changes in tracked file $1 reverted."
+    git ls-files $1 --error-unmatch >/dev/null 2>&1
+    if ! [[ $? == 0 ]]; then
+      echo
+      echo "File $1 is no longer tracked by this git repository."
+      delete_file $1
+    fi 
+  else
+    echo
+    echo "File $1 is not tracked by this git repository."
+    delete_file $1
+  fi
+else
+  echo "No such file ${1}."
+fi

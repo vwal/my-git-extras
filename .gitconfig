@@ -315,7 +315,7 @@
           dstaged = diff --dirstat
 
 	#show filenames affected by a given commit
-	  cfiles = "!f() { git diff --name-status $1^ $1; }; f"
+	  cfiles = show --name-only
         #show changes in a specific commit; NOTE: http://stackoverflow.com/a/25395673/134536; NOTE: can also use 'show'
 	  cdiff = "!f() { git diff $1^!; }; f"
         #show commit log between two given commits

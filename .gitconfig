@@ -30,6 +30,10 @@
 
 	#ABBR: branch
           br = branch
+	#drop (delete) a branch irrespecive of its merge status (be careful!)
+	  dropbr = branch -D
+	#drop (delete) remote branch
+	  droprembr = "!f() { git push $1 --delete $2; }; f"
 	#show local and remote branches a commit (SHA) occurs in
 	  c2b = branch -a --contains
 	#find commits by Author (partial match is ok)
@@ -38,23 +42,27 @@
 	#create a new branch, set up it's upstream, start tracking it, and check it out'
 	#use this also to checkout a remote branch: [localbranchname] [remotebranchname]
           tbr = checkout --track -b
+	#check out a remote branch with its name as-is
+	  coasis = checkout --track
 	#create a new branch and check it out, local only (no upstream) 
           lbr = checkout --no-track -b
-        #EXT (my-git-extrash/git-publish-branch): publish an existing local branch to remote, and start tracking it
+        #push branch to remote with the same name as local, and set tracking (req: <remotename> <localbranchname>[:<remotebranchname>])
+          pushtrack = push -u
+        #EXT (my-git-extrash/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
           pub = publish-branch
+        #EXT (my-git-extrash/git-publish-branch): unpublish the given branch on remote, and stop tracking it
+          unpub = publish-branch -d
         #set remote upstream for an existing local branch
 	  setrembr = branch --set-upstream-to
         #unset remote upstrem for an existing local branch
  	  unsetrembr = branch --unset-upstream
-	#drop (delete) a branch irrespecive of its merge status (be careful!)
-	  dropbr = branch -D
 
 	#EXT (my-git-extras/git-uncheckout): uncheckout a remote branch (cannot be current) to remove from local 
           unco = uncheckout
 	#EXT (my-git-extras/git-uncheckout-interactive): uncheckout remote branches interactively (to choose which ones to remove/keep on local)
           uncoint = uncheckout-interactive
 	#checkout master branch
-          master = checkout master
+          master = stash-and-checkout master
 
 	#ABBR: blame
           bl = blame
@@ -85,6 +93,10 @@
 	  tags = show-tags
 	#show known remotes
           remotes = remote -v
+	#show branch heads on the given remote (query remote)
+	  rembrs = ls-remote --heads 
+	#show tracked remote branches (known since the most recent fetch)
+	  trackbrs = branch -r
         #list remote-tracking and local branches
           lab = branch --all
 	#show trackable branches and their statuses on the repo's remote

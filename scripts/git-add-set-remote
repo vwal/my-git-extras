@@ -1,0 +1,56 @@
+#!/bin/bash
+
+#
+# git extension:
+# Add or update URL for the given remote; if it doesn't exist, create it.
+#
+
+url=`git config --get remote.${1}.url`
+
+git remote | grep $1 > /dev/null 2>&1
+if test $? = 0; then
+    printf "Remote $1 exists with the current URL of ${url} - (A)dd another push URL/(U)pdate/(C)ancel? "
+    read -s -n 1 key
+    if [[ "$key" == "" ]] ; then
+      ACTION=SKIP
+    fi
+    if [[ "$key" == "a" || "$key" == "A" ]] ; then
+      ACTION=ADD
+    fi
+    if [[ "$key" == "u" || "$key" == "U" ]] ; then
+      ACTION=UPDATE
+    fi
+    if [[ "$key" == "c" || "$key" == "C" ]] ; then
+      ACTION=SKIP
+    fi
+
+    if [ "$ACTION" = "SKIP" ] ; then
+      echo    
+      echo "Operation cancelled."
+      echo
+      exit;
+    fi
+
+    if [ "$ACTION" = "ADD" ] ; then
+      git remote set-url --add $1 $2
+      echo
+      echo "URL $2 added to remote: ${1}"
+      echo
+    fi
+
+    if [ "$ACTION" = "UPDATE" ] ; then
+      git remote remove $1
+      git remote add $1 $2
+      echo
+      echo "Remote $1 updated to URL: ${2}"
+      echo
+    fi
+else
+    git remote add $1 $2
+    echo
+    echo Added remote $1 and set it to URL: ${2}
+fi
+
+echo
+echo Configured remotes for this repo:
+git remote -v

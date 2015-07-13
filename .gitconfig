@@ -43,9 +43,9 @@
         #EXT (my-git-extrash/git-publish-branch): publish an existing local branch to remote, and start tracking it
           pub = publish-branch
         #set remote upstream for an existing local branch
-	  setrem = branch --set-upstream-to
+	  setrembr = branch --set-upstream-to
         #unset remote upstrem for an existing local branch
- 	  unsetrem = branch --unset-upstream
+ 	  unsetrembr = branch --unset-upstream
 	#drop (delete) a branch irrespecive of its merge status (be careful!)
 	  dropbr = branch -D
 
@@ -71,8 +71,10 @@
 	  rem = remote
 	#show fetch/push URLs
 	  srem = remote -v
-	#set remote URL (requires remote URL, e.g. git@github.com:/USERNAME/OTHERREPO.git)
-	  rsu = remote set-url origin 
+	#set remote URL (requires remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
+	  rsu = add-set-remote 
+	#remove remote
+	  remrem = remote remove 
 
 	#EXT (my-git-extras/git-show-remote-branch): show remote(s) for the current branch 
           rembr = show-remote-branch

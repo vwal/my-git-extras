@@ -263,6 +263,8 @@
 
 	#show oneline commit log with graph; committer details
           l = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=relative
+	#show oneline commit log with commit dates
+          ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 	#show oneline commit log with graph; committer details; full SHA
           lfs = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --no-abbrev --date=relative
 	#like 'l' but selectable number of output lines as a param        

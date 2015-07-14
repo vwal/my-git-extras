@@ -14,7 +14,7 @@
 	  deltag = tag -d
 	  pushtags = push origin --tags
 
-	#force push (e.g. to reset remote to a specific commit after local reset --hard <hash>); req <remote> <lb>:<rb> as params
+	#force push (e.g. to reset remote to a specific commit after local reset --hard <hash> or amended commit); req <remote> [<lb>:<rb>] as params
 	  pushard = push -f
 
 	#clone a respository and init its submodules
@@ -30,6 +30,8 @@
 
 	#ABBR: branch
           br = branch
+	#rename branch
+	  renbr = branch -m 
 	#drop (delete) a branch irrespecive of its merge status (be careful!)
 	  dropbr = branch -D
 	#drop (delete) remote branch
@@ -241,10 +243,14 @@
           xa = commit -a -m
         #stage all and commit in one go
           ac = "!f(){ git add -A :/; git commit -m \"${*:- }\"; };f"
+        #create a SAVEPOINT commit
+          save = !git add -A :/ && git commit -m 'SAVEPOINT'
+        #create a WIP commit
+          wip = !git add -u && git commit -m 'WIP'
 	#add the currently staged changes to the most recent commit; do not modify the commit message
-          amend = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
+	  amend = commit --amend -C HEAD
 	#modify commit message for the most recent commit
-	  xm = commit --amend -m
+	  revise = commit --amend
 	#undo the most recent commit (committed items are returned to stage)
 	  xx = reset --soft HEAD~1
 
@@ -294,6 +300,9 @@
           lcl = log --pretty=oneline --abbrev-commit
 	#show a simple list of the tags
 	  lt = tag -l -n1
+
+	#ABBR: reflog
+	  ref = reflog --no-abbrev --pretty=full-reflog
 
 	#EXT (my-git-extras/git-show-commit): display details for a commit
           sc = show-commit 
@@ -347,7 +356,7 @@
 	#EXT (my-git-extras/git-wipe-file): wipe a single file
 	  wipefile = wipe-file
         #wipe current uncommitted (including staged and untracked) changes; deletes previously untracked!
-          wipeall = reset --hard HEAD
+          wipeall = !git add -A :/ && git commit -m 'WIPE SAVEPOINT' && git reset --hard HEAD~1
         #wipe unstaged tracked changes (does not touch staged, tracked or untracked)
           wipeunstaged = checkout -- .
         #EXT (my-git-extras/wipe-unstaged): wipe current unstaged (including untracked) changes; deletes untracked!
@@ -368,6 +377,9 @@
 
         #list defined git aliases
           lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
+
+	#edit this file
+	  eg = config --global -e
        
 [format]
 	numbered = auto
@@ -429,8 +441,8 @@
 	token = <SNIP>
 [pretty]
 	solarized = "format:%x1b[30m%h%Creset %s %x1b[36m%d %x1b[93;2m— %ar%x1b[0m"
-	solarized-reflog = "format:%x1b[33m%gd%Creset %gs %x1b[93;2m— %ar%x1b[0m"
 	solarized-parseable = "format:%x1b[30m%h%Creset %x1f%s%x1f %x1b[36m%d %x1b[93;2m— %ar%x1b[0m"
+	full-reflog = "format:%x1b[93;2m%h - %x1b[33m%>>(11)%gd%Creset - %x1b[1;37m%>>(14)%ar% %x1b[0;37m @ %ai%Creset -%x1b[0;34m %gs"
 [clean]
 	requireForce = true
 [credential]

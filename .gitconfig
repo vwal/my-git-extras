@@ -49,6 +49,7 @@
         #push branch to remote with the same name as local, and set tracking (req: <remotename> <localbranchname>[:<remotebranchname>])
           pushtrack = push -u
         #EXT (my-git-extrash/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
+	#usage: git publish-branch [-d] <branch> [repository]
           pub = publish-branch
         #EXT (my-git-extrash/git-publish-branch): unpublish the given branch on remote, and stop tracking it
           unpub = publish-branch -d

@@ -276,13 +276,13 @@
           sh = show
 
 	#show oneline commit log with graph; committer details
-          l = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=relative
+          l = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)[%an]%Creset' --abbrev-commit --date=relative
 	#show oneline commit log with commit dates
           ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 	#show oneline commit log with graph; committer details; full SHA
-          lfs = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --no-abbrev --date=relative
+          lf = log --graph --pretty=full-log --no-abbrev --date=relative
 	#like 'l' but selectable number of output lines as a param        
-	  ln = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=relative -n
+	  ln = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)[%an]%Creset' --abbrev-commit --date=relative -n
 	#show commit log with full detail
           lna = log --pretty=fuller --decorate --graph 
 	#show commit log with full diff patches
@@ -334,10 +334,14 @@
 
         #ABBR: diff (without params show changes since index, i.e. since stage, or if no stage exist, since HEAD)
           df = diff
+	#inline diff
+	  dfi = diff --word-diff
         #show changes to the HEAD (staged and unstaged)
           dfhd = diff HEAD
         #show changes in HEAD (to the previous commit)
           lastcm = diff "HEAD^" HEAD        
+        #show changes inline in HEAD (to the previous commit)
+          lastcmi = diff "HEAD^" HEAD --word-diff        
 	#show diff for staged (cached); show diff between HEAD and stage
           dfstaged = diff --staged
         #list file names in stage
@@ -449,9 +453,8 @@
 	user = vwal
 	token = <SNIP>
 [pretty]
-	solarized = "format:%x1b[30m%h%Creset %s %x1b[36m%d %x1b[93;2m— %ar%x1b[0m"
-	solarized-parseable = "format:%x1b[30m%h%Creset %x1f%s%x1f %x1b[36m%d %x1b[93;2m— %ar%x1b[0m"
-	full-reflog = "format:%x1b[93;2m%h - %x1b[33m%>>(11)%gd%Creset - %x1b[1;37m%>>(14)%ar% %x1b[0;37m @ %ai%Creset -%x1b[0;31m %gs %x1b[1;31m(%s) %x1b[0;34m- %cn"
+	full-log = "format:%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr %x1b[0;37m@ %ai%Creset %C(cyan)[%an]%Creset%n"
+	full-reflog = "format:%x1b[93;2m%h - %x1b[33m%>>(11)%gd%Creset - %x1b[1;37m%>>(14)%ar% %x1b[0;37m @ %ai%Creset -%x1b[1;31m %gs %x1b[0;31m(%s) %x1b[0;34m- %cn%n"
 [clean]
 	requireForce = true
 [credential]

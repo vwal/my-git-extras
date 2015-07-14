@@ -78,6 +78,13 @@
         #display the last commit for the given branch (or current if not given)
 	  llv = branch -lvv
 
+	#ABBR: grep
+	  gg = grep
+	#case-insensitive grep
+	  ggi = grep -i
+	#display filenames only for matches
+	  ggno = grep --name-only
+
 	#ABBR: remote
 	  rem = remote
 	#show fetch/push URLs
@@ -342,6 +349,8 @@
 
 	#show filenames affected by a given commit
 	  cfiles = show --name-status
+	#show HEAD offset
+	  shead = "!f() { git show HEAD@{$1}; }; f"
         #show changes in a specific commit; NOTE: http://stackoverflow.com/a/25395673/134536; NOTE: can also use 'show'
 	  cdiff = "!f() { git diff $1^!; }; f"
         #show commit log between two given commits

@@ -14,11 +14,11 @@ Currently the only external dependency (besides the scripts in this repository) 
 Other recommended git extensions
 --------------------------------
 
-**git-extras**
+**git-extras**  
 https://github.com/tj/git-extras
 
-**git-up**
+**git-up**  
 https://github.com/aanand/git-up
 
-**Adam's git shortcuts and environment**
+**Adam's git shortcuts and environment**  
 https://github.com/aspiers/git-config

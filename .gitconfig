@@ -11,8 +11,22 @@
 	
 	#add a tag to the current commit
 	  addtag = tag -a 
+	#delete tag
 	  deltag = tag -d
+	#push tags to origin
 	  pushtags = push origin --tags
+	#show last tag name and annotation
+	  lasttag = describe --tags --abbrev=0
+	  lt = describe --tags --abbrev=0
+	#show last tag diff and details
+	  lts = !git describe --exact-match --abbrev=0 | xargs git show 	  
+	#show tags list
+	  taglist = tag -l
+	#EXT (my-git-extras/git-show-tags): show tags detail
+	  tags = show-tags
+
+	#ABBR: describe
+	  desc = describe
 
 	#force push (e.g. to reset remote to a specific commit after local reset --hard <hash> or amended commit); req <remote> [<lb>:<rb>] as params
 	  pushard = push -f
@@ -31,7 +45,9 @@
 	#ABBR: branch
           br = branch
 	#rename branch
-	  renbr = branch -m 
+	  renbr = branch -m
+	#add 'done-' label to branch name (rename)
+	  done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f" 
 	#drop (delete) a branch irrespecive of its merge status (be careful!)
 	  dropbr = branch -D
 	#drop (delete) remote branch
@@ -79,11 +95,18 @@
 	  llv = branch -lvv
 
 	#ABBR: grep
-	  gg = grep
+	  grep = grep -I
+	  gg = grep -I
 	#case-insensitive grep
-	  ggi = grep -i
+	  ggi = grep -iI
+	#grep from top level
+	  gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
 	#display filenames only for matches
-	  ggno = grep --name-only
+	  ggno = grep -I --name-only
+	#search log for commit comments with a given string
+	  findstring = log --pretty=format:'%Cgreen%H %Cblue%s' --name-status --grep
+	#locate a file in the codebase (req filename)
+	  ff = !git ls-files | grep -i
 
 	#ABBR: remote
 	  rem = remote
@@ -99,8 +122,6 @@
 	#show remote tracked branches for the local branches
         #TODO: convert this into a script; detect "no remotes"
           rems = for-each-ref --format='%(refname:short) <- %(upstream:short)' refs/heads
-	#EXT (my-git-extras/git-show-tags): show tags
-	  tags = show-tags
 	#show known remotes
           remotes = remote -v
 	#show branch heads on the given remote (query remote)
@@ -220,6 +241,8 @@
 
         #stage all changes
           aa = add -A :/
+	#stage selected patches
+	  ap = add -p
         #stage modifications and new (not deletions)
           amodnew = add --ignore-removal .
 	#stage modifications and deletions (not new)
@@ -265,8 +288,8 @@
           t = tag
 
 	#exclude/unexclude files using assume-unchanged
-          aun = update-index --assume-unchanged
-          naun = update-index --no-assume-unchanged
+          assume = update-index --assume-unchanged
+          unassume = update-index --no-assume-unchanged
 	#not in index; show untracked files
           nii = ls-files --others --exclude-standard
 	#EXT (my-git-extras/git-show-ignored): show all ignored, whether assume-unchanged, exclude-standard, or .gitgnore
@@ -307,6 +330,8 @@
           lcl = log --pretty=oneline --abbrev-commit
 	#show a simple list of the tags
 	  lt = tag -l -n1
+	#show commits since last command (e.g. git pull)
+	  new = !sh -c 'git log $1@{1}..$1@{0} HEAD'
 
 	#ABBR: reflog
 	  ref = reflog --no-abbrev --pretty=full-reflog
@@ -340,8 +365,6 @@
           dfhd = diff HEAD
         #show changes in HEAD (to the previous commit)
           lastcm = diff "HEAD^" HEAD        
-        #show changes inline in HEAD (to the previous commit)
-          lastcmi = diff "HEAD^" HEAD --word-diff        
 	#show diff for staged (cached); show diff between HEAD and stage
           dfstaged = diff --staged
         #list file names in stage
@@ -363,8 +386,7 @@
           diffin = log -n1 --format=fuller -p
         #show changes between two given commits (SHAs)
           diffrange = log --format=fuller -p
-	#search log for commit comments with a given string
-	  findstring = log --pretty=format:'%Cgreen%H %Cblue%s' --name-status --grep
+
 
 	#EXT (my-git-extras/git-wipe-file): wipe a single file
 	  wipefile = wipe-file

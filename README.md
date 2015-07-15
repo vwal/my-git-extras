@@ -20,3 +20,5 @@ https://github.com/tj/git-extras
 **git-up**
 https://github.com/aanand/git-up
 
+**Adam's git shortcuts and environment**
+https://github.com/aspiers/git-config

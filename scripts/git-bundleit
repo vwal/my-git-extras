@@ -13,5 +13,5 @@ PARENT=`dirname $PWD`
 
 git bundle create ../${ORIGDIR}_${DATETIME}.bundle --all
 echo "Bundle ${ORIGDIR}_${DATETIME}.bundle containing all branches created in the parent (${PARENT})."
-echo "**NOTE: Any ignored items were not included in the bundle!"
+echo "**NOTE: Tracked remote branches and any ignored items are not included in the bundle!"
 echo

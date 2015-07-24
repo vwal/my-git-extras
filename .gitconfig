@@ -284,6 +284,9 @@
 	#undo the most recent commit (committed items are returned to stage)
 	  xx = reset --soft HEAD~1
 
+	#execute git command with fileMode off
+	  n = "!f(){ git -c core.fileMode=false $@; };f"
+
 	#ABBR: tag
           t = tag
 

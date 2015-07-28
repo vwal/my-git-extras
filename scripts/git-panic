@@ -7,9 +7,10 @@
 
 DATETIME=`date "+%Y%m%d_%H%M"`
 
-ORIGDIR=${PWD##*/}
-PARENT=`dirname $PWD`
+ORIGDIR="${PWD##*/}"
+REPODIR="${ORIGDIR// /_}"
+PARENT=`dirname "$PWD"`
 
-tar -C $PARENT -cf ../git_panic_${DATETIME}.tar $ORIGDIR
-echo "Panicfile git_panic_${DATETIME}.tar stored in the parent (${PARENT})."
+tar -C "$PARENT" -cf ../git_panic_${DATETIME}-${REPODIR}.tar "$ORIGDIR"
+echo "Panicfile git_panic_${DATETIME}-${REPODIR}.tar stored in the parent (${PARENT})."
 echo

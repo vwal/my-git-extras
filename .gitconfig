@@ -137,7 +137,7 @@
 	#show tracked remote branches (known since the most recent fetch)
 	  trackbrs = branch -r
 	#list remote-tracking and local branches
-	  lab = branch --all
+	  lab = branch -avv
 	#show trackable branches and their statuses on the repo's remote
 	  rso = remote show origin
 	  rsop = config --get remote.origin.url

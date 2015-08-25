@@ -288,7 +288,7 @@
 	#add the currently staged changes to the most recent commit; do not modify the commit message
 	  amend = commit --amend -C HEAD
 	#modify commit message for the most recent commit
-	  revise = commit --amend
+	  revise = commit --amend -m 
 	#undo the most recent commit (committed items are returned to stage)
 	  xx = reset --soft HEAD~1
 

@@ -177,15 +177,15 @@
 	  rupp = remote-updates -p
 
 	#show local commits not yet pushed to the remote (synonmous to outlog?)
-	#  unpushed = !LB=$(git rev-parse --abbrev-ref HEAD) && RB=$(git show-remote-branch) && git lfs "\"$RB\"".."\"$LB\""
+	#  unpushed = !LB=$(git rev-parse --abbrev-ref HEAD) && RB=$(git show-remote-branch) && git lf "\"$RB\"".."\"$LB\""
 
 	#show changes to upstream
 	  statup = !git remote update -p && git diff --stat @{u}
 
 	#show diff from local to upstream (not yet pushed)
-	  outlog = !git lfs @{u}..
+	  outlog = !git lf @{u}..
 	#show diff from upstream to local (not yet merged)
-	  inlog = !git remote update -p && git lfs ..@{u}
+	  inlog = !git remote update -p && git lf ..@{u}
 
 	#simulate push
 	  outgoing = push --dry-run
@@ -202,9 +202,9 @@
 	#whatchanged in the remote of this branch (show patches)
 	  remchp = !RE=$(git show-remote-branch) && git remote update -p && git whatchanged -p "\"$RE\""
 	#remote log
-	  reml = !RE=$(git show-remote-branch) && git remote update -p && git lfs "\"$RE\""
+	  reml = !RE=$(git show-remote-branch) && git remote update -p && git lf "\"$RE\""
 	#remote log with patches
-	  remlp = !RE=$(git show-remote-branch) && git remote update -p && git lfs -p "\"$RE\""
+	  remlp = !RE=$(git show-remote-branch) && git remote update -p && git lf -p "\"$RE\""
 
 	#ABBR: merge
 	  mg = merge

@@ -102,19 +102,23 @@
 	#display the last commit for the given branch (or current if not given)
 	  llv = branch -lvv
 
-	#ABBR: grep
+	#ABBR: grep working tree for regexp (no binary file serach)
 	  grep = grep -I
 	  gg = grep -I
-	#case-insensitive grep
+	#case-insensitive grep working tree for regexp (no binary file search)
 	  ggi = grep -iI
-	#grep from top level
+	#grep working tree for regexp from top level (no binary file search)
 	  gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
-	#display filenames only for matches
+	#grep working tree; display filenames only for matches (no binary file search)
 	  ggno = grep -I --name-only
 	#search log for commit comments with a given string
 	  findstring = log --pretty=format:'%Cgreen%H %Cblue%s' --name-status --grep
 	#locate a file in the codebase (req filename)
 	  ff = !git ls-files | grep -i
+	#find string in code history (not in commit comments)
+	  grepcode = "!f() { git rev-list --all | xargs git grep $1; }; f"
+	
+	###see more git grep examples: http://stackoverflow.com/a/2929502/134536
 
 	#ABBR: remote
 	  rem = remote

@@ -1,6 +1,10 @@
 [user]
 	name = Ville Walveranta
 	email = ville@walveranta.org
+
+[init]
+	templatedir = ~/.git/templates
+
 [color]
 	ui = auto
 	status = auto
@@ -27,6 +31,9 @@
 
 	#ABBR: describe
 	  desc = describe
+
+	#ABBR: config
+	  cnf = config
 
 	#force push (e.g. to reset remote to a specific commit after local reset --hard <hash> or amended commit); req <remote> [<lb>:<rb>] as params
 	  pushard = push -f
@@ -427,6 +434,10 @@
 
 	#list defined git aliases
 	  lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
+
+	#git-passport: manage commit identities (see details at https://github.com/frace/git-passport)
+	  pp = !${HOME}/.git/hooks/bin/git-passport/git-passport.py
+	  pps = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -s
 
 	#edit this file
 	  eg = config --global -e

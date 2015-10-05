@@ -23,6 +23,9 @@ https://github.com/aanand/git-up
 **Adam's git shortcuts and environment**  
 https://github.com/aspiers/git-config
 
+**git-mv-with-history**
+https://gist.github.com/emiller/6769886
+
 
 Note
 ----

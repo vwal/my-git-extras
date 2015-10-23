@@ -71,6 +71,9 @@
 	  c2b = branch -a --contains
 	#find commits by Author (partial match is ok)
 	  author = "!f() { git log --all --author=$1; }; f"
+	#change the author and the committer of the most recent commit (args: name (use quotes if name contains spaces), email);
+	#to change author deeper into the commits, see: http://stackoverflow.com/questions/750172/change-the-author-of-a-commit-in-git
+	  chlastauth = "!f() { git -c user.name=\"$1\" -c user.email=\"$2\" commit --amend --reset-author --no-edit; }; f"
 
 	#create a new branch, set up it's upstream, start tracking it, and check it out'
 	#use this also to checkout a remote branch: [localbranchname] [remotebranchname]
@@ -161,6 +164,8 @@
 	#ABBR: rebase
 	  rb = rebase
 
+	#interactive rebase; preserve merges (good for updating author info, for example); takes some HEAD as arg
+	  irbp = rebase -i -p 
 	#interactive rebase for the given upstream
 	  irbu = rebase -i @{u}
 	#interactive rebase to squash [previous] commits to the head

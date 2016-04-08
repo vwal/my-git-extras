@@ -133,10 +133,10 @@
 
 	#ABBR: remote
 	  rem = remote
-	#show fetch/push URLs
-	  srem = remote -v
-	#set remote URL (requires remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
-	  rsu = add-set-remote 
+	#show known remote fecth/push URLs
+	  remotes = remote -v
+	#add/update remote URL (requires remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
+	  addrem = add-set-remote 
 	#remove remote
 	  remrem = remote remove 
 
@@ -145,8 +145,6 @@
 	#show remote tracked branches for the local branches
 	#TODO: convert this into a script; detect "no remotes"
 	  rems = for-each-ref --format='%(refname:short) <- %(upstream:short)' refs/heads
-	#show known remotes
-	  remotes = remote -v
 	#show branch heads on the given remote (query remote)
 	  rembrs = ls-remote --heads 
 	#show tracked remote branches (known since the most recent fetch)

@@ -307,7 +307,7 @@
 	#undo the most recent commit (committed items are returned to stage)
 	  xx = reset --soft HEAD~1
 
-	#execute git command with fileMode off
+	#execute git command with fileMode off (e.g. ignore permissions changes)
 	  n = "!f(){ git -c core.fileMode=false $@; };f"
 
 	#ABBR: tag
@@ -466,24 +466,24 @@
 	autosquash = true
 [diff]
 	mnemonicprefix = true
-	tool = bc3
+	tool = bc4
 [difftool]
 	prompt = false
-[difftool "bc3"]
+[difftool "bc4"]
 	trustExitCode = true
 	cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\"
 [difftool "vim"]
 	trustExitCode = true
 	cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
 [merge]
-	tool = bc3
+	tool = bc4
 [mergetool]
 	prompt = false
 	keepBackup = false
 [difftool "vim"]
 	trustExitCode = true
 	cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
-[mergetool "bc3"]
+[mergetool "bc4"]
 	trustExitCode = true
 	cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 [mergetool "vim"]

@@ -8,7 +8,7 @@ Various git aliases and scripts I have found useful in everyday git use. Some of
 Alias dependencies
 ------------------
 
-Currently the only external dependency (besides the scripts in this repository) that some aliases refer to are some **git whistles** (https://github.com/mezis/git-whistles) commands.
+Currently the only external dependency (besides the scripts in this repository) that some aliases refer to are some **git whistles** (https://github.com/mezis/git-whistles, install with: `rvm @global do gem install git-whistles`) commands.
 
 
 Other recommended git extensions
@@ -18,7 +18,9 @@ Other recommended git extensions
 https://github.com/tj/git-extras
 
 **git-up**  
-https://github.com/aanand/git-up
+https://github.com/aanand/git-up<br />
+(install with: `rvm @global do gem install git-up`)
+
 
 **Adam's git shortcuts and environment**  
 https://github.com/aspiers/git-config

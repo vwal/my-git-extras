@@ -416,6 +416,8 @@
 
 	#EXT (my-git-extras/git-wipe-file): wipe a single file
 	  wipefile = wipe-file
+	#reset a single file (requires a filename as a param)
+	  resetfile = checkout HEAD -- 
 	#wipe current uncommitted (including staged and untracked) changes; deletes previously untracked!
 	  wipeall = !git add -A :/ && git commit -m 'WIPE SAVEPOINT' && git reset --hard HEAD~1
 	#wipe unstaged tracked changes (does not touch staged, tracked or untracked)

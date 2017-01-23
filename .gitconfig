@@ -82,10 +82,10 @@
 	  lbr = checkout --no-track -b
 	#push branch to remote with the same name as local, and set tracking (req: <remotename> <localbranchname>[:<remotebranchname>])
 	  pushtrack = push -u
-	#EXT (my-git-extrash/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
+	#EXT (my-git-extras/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
 	#usage: git publish-branch [-d] <branch> [repository]
 	  pub = publish-branch
-	#EXT (my-git-extrash/git-publish-branch): unpublish the given branch on remote, and stop tracking it
+	#EXT (my-git-extras/git-publish-branch): unpublish the given branch on remote, and stop tracking it
 	  unpub = publish-branch -d
 	#set remote upstream for an existing local branch (NOTE: may need to fetch first, especially if remote was just added, then e.g. origin/master)
 	  setrembr = branch --set-upstream-to

@@ -34,11 +34,6 @@ Other recommended Git extensions
 **git-extras**  
 https://github.com/tj/git-extras
 
-**git-up**  
-https://github.com/aanand/git-up<br />
-(install with: `rvm @global do gem install git-up`)
-
-
 **Adam's git shortcuts and environment**  
 https://github.com/aspiers/git-config
 

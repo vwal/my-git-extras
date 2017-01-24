@@ -228,8 +228,11 @@
 	  meff = merge --ff-only
 	#pull (fetch + merge) from remote, require fast-forwardable (or HEAD to be good as-is); explicitly no rebasing (merge instead)
 	  puff = pull --ff --ff-only --no-rebase
-	#pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote
+	
+  #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote
 	  purr = pull --ff --ff-only --rebase
+  #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote, including on a dirty local
+    purrd = pull --ff --ff-only --rebase --autostash
 	
 	#ABBR: fetch
 	  f = fetch

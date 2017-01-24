@@ -9,6 +9,22 @@
 	branch = auto
 	interactive = auto
 
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
 [alias]
 	#add a tag to the current commit
 	  addtag = tag -a 
@@ -47,15 +63,15 @@
 	  cot = checkout
 	#EXT (my-git-extras/git-checkout-all): track all available branches from the origin
 	  ca = checkout-all
-	#make an orphan
-  # branch (no parents, no history)
+	#make an orphan branch (no parents, no history)
 	  orphan = "!f() { git checkout --orphan $1 && git rm -rf "."; }; f"  
 
 	#ABBR: branch
 	  br = branch
-  #display the current branch name (including detached head, orphan)
-  #TODO: resolve SHA to branch(es) (as in 'c2b', such as with a detached head)
-    brr = "!f() { git status -b | head -n1 | cut -d' ' -f3- ; }; f"
+	#display the current branch name (including detached head, orphan)
+	#TODO: resolve SHA to branch(es) (as in 'c2b', such as with a detached head)
+	#See: http://stackoverflow.com/questions/2706797/finding-what-branch-a-git-commit-came-from
+	  brr = "!f() { git status -b | head -n1 | cut -d' ' -f3- ; }; f"
 	#rename branch
 	  renbr = branch -m
 	#swap branches
@@ -66,7 +82,7 @@
 	  done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f" 
 	#drop (delete) a branch irrespecive of its merge status (be careful!)
 	  dropbr = branch -D
-	#drop (delete) remote branch
+	#drop (delete) remote branch; args: repo, branch; e.g. droprembr origin somebranch
 	  droprembr = "!f() { git push $1 --delete $2; }; f"
 	#show local and remote branches a commit (SHA) occurs in
 	  c2b = branch -a --contains
@@ -145,18 +161,27 @@
 	  rembr = show-remote-branch
 	#show remote tracked branches for the local branches
 	#TODO: convert this into a script; detect "no remotes"
-	  rems = for-each-ref --format='%(color:bold cyan)%(refname:short)%(color:reset) <- %(color:cyan)%(upstream:short)%(color:reset)' refs/heads
+	  rems = for-each-ref --format='%(color:reverse cyan)%(refname:short)%(color:reset) <- %(color:cyan)%(upstream:short)%(color:reset)' refs/heads
 	#show branch heads on the given remote (query remote)
 	  rembrs = ls-remote --heads 
 	#show tracked remote branches (known since the most recent fetch)
 	  trackbrs = branch -r
 	#list remote-tracking and local branches
 	  lab = branch -avv
-	#show trackable branches and their statuses on the repo's remote
+	#show trackable branches and their statuses on the repo's origin
 	  rso = remote show origin
+	#show this repo's origin URL
 	  rsop = config --get remote.origin.url
 	#update remote refs and display branches that got updated
 	  ru = remote -v update
+
+	#refresh heads/refs from origin
+	  fo = fetch origin
+	#refresh heads/refs from all remotes
+	  fa = fetch --all
+
+	#ABBR: fetch
+	  f = fetch
 
 	#ABBR: rev-parse
 	  rp = rev-parse
@@ -233,14 +258,11 @@
 	#pull (fetch + merge) from remote, require fast-forwardable (or HEAD to be good as-is); explicitly no rebasing (merge instead)
 	  puff = pull --ff --ff-only --no-rebase
 	
-  #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote
+	#pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote
 	  purr = pull --ff --ff-only --rebase
-  #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote, including on a dirty local
-    purrd = pull --ff --ff-only --rebase --autostash
+	#pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote, including on a dirty local
+	  purrd = pull --ff --ff-only --rebase --autostash
 	
-	#ABBR: fetch
-	  f = fetch
-
 	#ABBR: stash
 	  ss = stash
 

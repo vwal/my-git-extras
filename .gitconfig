@@ -39,7 +39,7 @@
 	  lts = !git describe --exact-match --abbrev=0 | xargs git show 	  
 	#show tags list
 	  taglist = tag -l
-	#EXT (my-git-extras/git-show-tags): show tags detail
+	#EXT (my-git-extras/scripts/git-show-tags): show tags detail
 	  tags = show-tags
 
 	#ABBR: describe
@@ -61,7 +61,7 @@
 	  co = stash-and-checkout
 	#ABBR: checkout
 	  cot = checkout
-	#EXT (my-git-extras/git-checkout-all): track all available branches from the origin
+	#EXT (my-git-extras/scripts/git-checkout-all): track all available branches from the origin
 	  ca = checkout-all
 	#make an orphan branch (no parents, no history)
 	  orphan = "!f() { git checkout --orphan $1 && git rm -rf "."; }; f"  
@@ -88,6 +88,8 @@
 	  c2b = branch -a --contains
 	#find commits by Author (partial match is ok)
 	  author = "!f() { git log --all --author=$1; }; f"
+	#EXT (my-git-extras/scripts/git-amend-author): amend author of a specific commit SHA (see more comments in the script)
+	  ama = amend-author
 	#change the author and the committer of the *most recent commit* (args: name (use quotes if name contains spaces), email);
 	#to change author deeper into the commits, see: http://stackoverflow.com/questions/750172/change-the-author-of-a-commit-in-git
 	#or http://stackoverflow.com/a/28845565/134536
@@ -102,19 +104,19 @@
 	  lbr = checkout --no-track -b
 	#push branch to remote with the same name as local, and set tracking (req: <remotename> <localbranchname>[:<remotebranchname>])
 	  pushtrack = push -u
-	#EXT (my-git-extras/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
+	#EXT (my-git-extras/scripts/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
 	#usage: git publish-branch [-d] <branch> [repository]
 	  pub = publish-branch
-	#EXT (my-git-extras/git-publish-branch): unpublish the given branch on remote, and stop tracking it
+	#EXT (my-git-extras/scripts/git-publish-branch): unpublish the given branch on remote, and stop tracking it
 	  unpub = publish-branch -d
 	#set remote upstream for an existing local branch (NOTE: may need to fetch first, especially if remote was just added, then e.g. origin/master)
 	  setrembr = branch --set-upstream-to
 	#unset remote upstrem for an existing local branch
  	  unsetrembr = branch --unset-upstream
 
-	#EXT (my-git-extras/git-uncheckout): uncheckout a remote branch (cannot be current) to remove from local 
+	#EXT (my-git-extras/scripts/git-uncheckout): uncheckout a remote branch (cannot be current) to remove from local 
 	  unco = uncheckout
-	#EXT (my-git-extras/git-uncheckout-interactive): uncheckout remote branches interactively (to choose which ones to remove/keep on local)
+	#EXT (my-git-extras/scripts/git-uncheckout-interactive): uncheckout remote branches interactively (to choose which ones to remove/keep on local)
 	  uncoint = uncheckout-interactive
 	#checkout master branch
 	  master = stash-and-checkout master
@@ -157,7 +159,7 @@
 	#remove remote
 	  remrem = remote remove 
 
-	#EXT (my-git-extras/git-show-remote-branch): show remote(s) for the current branch 
+	#EXT (my-git-extras/scripts/git-show-remote-branch): show remote(s) for the current branch 
 	  rembr = show-remote-branch
 	#show remote tracked branches for the local branches
 	#TODO: convert this into a script; detect "no remotes"
@@ -212,7 +214,7 @@
 	#continue rebase operation after merging
 	  rbc = rebase --continue
 
-	#EXT (my-git-extras/git-remote-updates): show updates on remote since the last common ancestor
+	#EXT (my-git-extras/scripts/git-remote-updates): show updates on remote since the last common ancestor
 	  rup = remote-updates
 	#as above, but with patches
 	  rupp = remote-updates -p
@@ -296,7 +298,7 @@
 	  amodnew = add --ignore-removal .
 	#stage modifications and deletions (not new)
 	  amoddel = add -u
-	#EXT (my-git-extras/git-add-mods-only): stage modifications only (not new/dels)
+	#EXT (my-git-extras/scripts/git-add-mods-only): stage modifications only (not new/dels)
 	  amod = add-mods-only
 
 	#ABBR: revert (creates patches to revert given SHAs or range such as 0766c053..HEAD; does not auto-commit the reversion patches)
@@ -344,7 +346,7 @@
 	  unassume = update-index --no-assume-unchanged
 	#not in index; show untracked files
 	  nii = ls-files --others --exclude-standard
-	#EXT (my-git-extras/git-show-ignored): show all ignored, whether assume-unchanged, exclude-standard, or .gitgnore
+	#EXT (my-git-extras/scripts/git-show-ignored): show all ignored, whether assume-unchanged, exclude-standard, or .gitgnore
 	  si = show-ignored
 
 	#ABBR: show
@@ -388,7 +390,7 @@
 	#ABBR: reflog
 	  ref = reflog --no-abbrev --pretty=full-reflog
 
-	#EXT (my-git-extras/git-show-commit): display details for a commit
+	#EXT (my-git-extras/scripts/git-show-commit): display details for a commit
 	  sc = show-commit 
 	#show simple log with the names of the affected files	
 	  sca = log --name-only
@@ -440,7 +442,7 @@
 	  diffrange = log --format=fuller -p
 
 
-	#EXT (my-git-extras/git-wipe-file): wipe a single file
+	#EXT (my-git-extras/scripts/git-wipe-file): wipe a single file
 	  wipefile = wipe-file
 	#reset a single file (requires a filename as a param)
 	  resetfile = checkout HEAD -- 
@@ -448,7 +450,7 @@
 	  wipeall = !git add -A :/ && git commit -m 'WIPE SAVEPOINT' && git reset --hard HEAD~1
 	#wipe unstaged tracked changes (does not touch staged, tracked or untracked)
 	  wipeunstaged = checkout -- .
-	#EXT (my-git-extras/wipe-unstaged): wipe current unstaged (including untracked) changes; deletes untracked!
+	#EXT (my-git-extras/scripts/wipe-unstaged): wipe current unstaged (including untracked) changes; deletes untracked!
 	  wipeallunstaged = wipe-unstaged
 	#wipe untracked files
 	  wipeu = clean -df

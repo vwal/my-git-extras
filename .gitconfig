@@ -152,13 +152,13 @@
 
 	#ABBR: remote
 	  rem = remote
-	#show known remote fecth/push URLs
+	#show known remote fetch/push URLs
 	  remotes = remote -v
 	#add/update remote URL (requires remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
 	  addrem = add-set-remote 
 	#remove remote (arg: only the remote name, such as "origin")
 	  remrem = remote remove 
-	#set a different 'push' remote from 'pull/fecth' URL (requires [existing] remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
+	#set a different 'push' remote from 'pull/fetch' URL (requires [existing] remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
 	#see: http://sleepycoders.blogspot.com/2012/05/different-git-push-pullfetch-urls.html for more detail
 	  forkrem = remote set-url --push 
 
@@ -259,14 +259,15 @@
 	  mergetest = "!f(){ git merge --no-commit --no-ff $1; git merge --abort; echo 'Merge aborted'; };f "
 
 	#merge, require fast-forwardable (or HEAD to be good as-is)
-	  meff = merge --ff-only
+	  meff = merge --ff-only --stat
 	#pull (fetch + merge) from remote, require fast-forwardable (or HEAD to be good as-is); explicitly no rebasing (merge instead)
-	  puff = pull --ff --ff-only --no-rebase
-	
+	  puff = pull --ff --ff-only --no-rebase --stat
+	  pu =  pull --ff --ff-only --no-rebase --stat	
+
 	#pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote
-	  purr = pull --ff --ff-only --rebase
+	  purr = pull --ff --ff-only --rebase --stat
 	#pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote, including on a dirty local
-	  purrd = pull --ff --ff-only --rebase --autostash
+	  purrd = pull --ff --ff-only --rebase --autostash --stat
 	
 	#ABBR: stash
 	  ss = stash

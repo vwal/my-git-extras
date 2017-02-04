@@ -156,8 +156,11 @@
 	  remotes = remote -v
 	#add/update remote URL (requires remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
 	  addrem = add-set-remote 
-	#remove remote
+	#remove remote (arg: only the remote name, such as "origin")
 	  remrem = remote remove 
+	#set a different 'push' remote from 'pull/fecth' URL (requires [existing] remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
+	#see: http://sleepycoders.blogspot.com/2012/05/different-git-push-pullfetch-urls.html for more detail
+	  forkrem = remote set-url --push 
 
 	#EXT (my-git-extras/scripts/git-show-remote-branch): show remote(s) for the current branch 
 	  rembr = show-remote-branch

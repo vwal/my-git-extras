@@ -95,24 +95,32 @@
 	#or http://stackoverflow.com/a/28845565/134536
 	  chlastauth = "!f() { git -c user.name=\"$1\" -c user.email=\"$2\" commit --amend --reset-author --no-edit; }; f"
 
-	#create a new branch, set up it's upstream, start tracking it, and check it out'
-	#use this also to checkout a remote branch: [localbranchname] [remote]/[remotebranchname]
-	  tbr = checkout --track -b
-	#check out a remote branch with its name as-is
+	#check out a remote branch with its name as-is and start tracking it: [remote]/[remotebranchname]
 	  coasis = checkout --track
-	#create a new branch and check it out, local only (no upstream) 
+	#"CheckOutTrackBranch"; create a new branch, set up it's upstream, start tracking it, and check it out;
+	#use this also to checkout a remote branch: [localbranchname] [remote]/[remotebranchname]; really same as 'branch' by itself
+	  cotb = checkout --track -b
+	#"CheckOutTrackBranchOrigin", as above, but use 'origin' for the remote, and the remote branch name for the local branch name: [remotebranchname]
+	  cotbo = "!f() { git checkout --track -b $1 origin/$1 ; }; f"
+	#create a new branch and check it out, local only (no upstream); 
+	#optimal for duplicating a local branch where you don't want to push back to the parent:
+	#e.g. [localtargetbranch] [localsourcebranch], or [localtargetbranch] [origin/remotesourcebranch        ]
 	  lbr = checkout --no-track -b
-	#push branch to remote with the same name as local, and set tracking (req: <remotename> <localbranchname>[:<remotebranchname>])
-	  pushtrack = push -u
+        #push branch to 'origin' with the same name as local, and set tracking (usually optimal after duplicating local branch with 'lbr')
+	  pushto = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD) ; }; f"
+	#set remote upstream for an existing local branch using 'origin' and the same branch name as local (NOTE: remote must also exist for this to work)
+	  setremo = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) ; }; f"
+
 	#EXT (my-git-extras/scripts/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
 	#usage: git publish-branch [-d] <branch> [repository]
 	  pub = publish-branch
 	#EXT (my-git-extras/scripts/git-publish-branch): unpublish the given branch on remote, and stop tracking it
 	  unpub = publish-branch -d
 	#set remote upstream for an existing local branch (NOTE: may need to fetch first, especially if remote was just added, then e.g. origin/master)
-	  setrembr = branch --set-upstream-to
+	#e.g. [localbranchname], or [origin/remotebranchname]
+	  setups = branch --set-upstream-to
 	#unset remote upstrem for an existing local branch
- 	  unsetrembr = branch --unset-upstream
+ 	  unsetups = branch --unset-upstream
 
 	#EXT (my-git-extras/scripts/git-uncheckout): uncheckout a remote branch (cannot be current) to remove from local 
 	  unco = uncheckout

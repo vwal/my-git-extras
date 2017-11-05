@@ -44,6 +44,8 @@
 	  ltdf = !git describe --exact-match --abbrev=0 | xargs git show 	  
 	#show tags list; NOTE: use 'ft' (git --fetch tags) first to get all tags 
 	  lst = "!f() { git log --no-walk --tags --pretty='%C(cyan)%h%Creset %d %Cblue%s%Creset' --decorate=full ; }; f"
+	#find a tag, req: tag name or hash
+	  fat = "!f() { git --no-pager log --tags --no-walk --no-abbrev --pretty='%h %d %s' --decorate=full | grep --color=auto "$1" ; }; f"
 	#show tags detail paginated; ; NOTE: use 'ft' (git --fetch tags) first to get all tags
 	  tags = "!f() { git log --no-walk --tags ; }; f"
 

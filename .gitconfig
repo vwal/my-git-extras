@@ -37,10 +37,10 @@
 	  lt = describe --tags --abbrev=0
 	#show last tag diff and details
 	  lts = !git describe --exact-match --abbrev=0 | xargs git show 	  
-	#show tags list
-	  taglist = tag -l
-	#EXT (my-git-extras/scripts/git-show-tags): show tags detail
-	  tags = show-tags
+	#show tags list; NOTE: use 'ft' (git --fetch tags) first to get all tags 
+	  lstg = "!f() { git show-tags | less ; }; f"
+	#EXT (my-git-extras/scripts/git-show-tags): show tags detail; ; NOTE: use 'ft' (git --fetch tags) first to get all tags
+	  tags = show-tags | less
 
 	#ABBR: describe
 	  desc = describe
@@ -61,6 +61,8 @@
 	  co = stash-and-checkout
 	#ABBR: checkout
 	  cot = checkout
+	#checkout a tag
+	  cotg = "!f() { git checkout tags/$1 ; }; f"
 	#EXT (my-git-extras/scripts/git-checkout-all): track all available branches from the origin
 	  ca = checkout-all
 	#make an orphan branch (no parents, no history)
@@ -192,6 +194,8 @@
 	  fo = fetch origin
 	#refresh heads/refs from all remotes
 	  fa = fetch --all
+	#fetch all tags (also those that are not directly acessible by the current references)
+	  ft = fetch --tags
 
 	#ABBR: fetch
 	  f = fetch

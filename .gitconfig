@@ -27,7 +27,9 @@
 [alias]
 	#init a repository; add 'GIT-START' tag with just .gitignore (usually an empty repo)
 	#for easy rebasing later from the first actual commit on
-	  initr = "!f() { git init && touch .gitignore && git add .gitignore && git commit -m 'Initial commit.' && git tag -a GIT-START -m 'For rebasing from the beginning.' && echo && git log --pretty=fuller --decorate --graph && echo && git status && echo '\nNOTE: Any existing content has not been committed yet!\n' ; }; f"
+	  initr = "!f() { git init && touch .gitignore && git add .gitignore && git commit -m 'Initial commit.' && git tag -a GIT-START -m 'For rebasing from the beginning.' && echo && git log --pretty=fuller --decorate && echo && git status && echo '\nNOTE: Any existing content has not been committed yet!\n' ; }; f"
+	#commit initial content after 'initr' in case git tracking was added to a non-empty directory
+	  initc = "!f() { git add -A && git commit -m 'Initial content.' && echo && git log --cc --stat && echo '\nInitial content has been committed.\n' ; }; f"
 
 	#add a tag to the current commit
 	  addtag = tag -a 

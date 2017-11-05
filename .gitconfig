@@ -383,9 +383,9 @@
 	#like 'l' but selectable number of output lines as a param        
 	  ln = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)[%an]%Creset' --abbrev-commit --date=relative -n
 	#show commit log with full detail
-	  lna = log --pretty=fuller --decorate --graph 
+	  lna = log --cc --stat
 	#show commit log with full diff patches
-	  lnap = log --pretty=fuller --decorate --graph --patch
+	  lnap = log --patch
 	#abbreviated (short) commit list
 	  lns = log --graph --decorate --pretty=oneline --abbrev-commit
 	#list my commits

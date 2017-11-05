@@ -37,6 +37,8 @@
 	  deltag = tag -d
 	#push tags to origin
 	  pushtags = push origin --tags
+	#list tags by date, from oldest to the most recent
+	  tbd = "!f() { git for-each-ref --format='%(*creatordate:raw)%(creatordate:raw) %(creatordate:short) %(refname) %(*objectname) %(objectname)' refs/tags | sort -n | awk '{ print $3, $5, $4 }' ; }; f"
 	#show last tag name and annotation
 	  lasttag = describe --tags --abbrev=0
 	  lt = describe --tags --abbrev=0

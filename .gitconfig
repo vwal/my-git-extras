@@ -120,9 +120,9 @@
   #e.g. [localtargetbranch] [localsourcebranch], or [localtargetbranch] [origin/remotesourcebranch]
     lbr = checkout --no-track -b
   #push branch to 'origin' with the same name as local, and set tracking (usually optimal after duplicating local branch with 'lbr')
-    pushto = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD) ; }; f"
+    pushtor = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD) ; }; f"
   #set remote upstream for an existing local branch using 'origin' and the same branch name as local (NOTE: remote must also exist for this to work)
-    setremo = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) ; }; f"
+    setremor = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) ; }; f"
 
   #EXT (my-git-extras/scripts/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
   #usage: git publish-branch [-d] <branch> [repository]

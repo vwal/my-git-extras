@@ -496,7 +496,7 @@
     gcom = help -a
 
   #list defined git aliases
-    lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
+    lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort | less
 
   #git-passport: manage commit identities (see details at https://github.com/frace/git-passport)
     pp = !${HOME}/.git/hooks/bin/git-passport/git-passport.py

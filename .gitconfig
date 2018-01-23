@@ -120,7 +120,9 @@
   #e.g. [localtargetbranch] [localsourcebranch], or [localtargetbranch] [origin/remotesourcebranch]
     lbr = checkout --no-track -b
   #push branch to 'origin' with the same name as local, and set tracking (usually optimal after duplicating local branch with 'lbr')
-    pushtor = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD) ; }; f"
+    pushtor = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD):$(git symbolic-ref --short HEAD) ; }; f"
+  #push branch to 'origin' with a different name as local, and set tracking
+    pushtorn = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD):$1 ; }; f"
   #set remote upstream for an existing local branch using 'origin' and the same branch name as local (NOTE: remote must also exist for this to work)
     setremor = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) ; }; f"
 
@@ -496,7 +498,9 @@
     gcom = help -a
 
   #list defined git aliases
-    lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort | less
+    lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | less
+  #list defined git aliases sorted
+    lals = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort | less
 
   #git-passport: manage commit identities (see details at https://github.com/frace/git-passport)
     pp = !${HOME}/.git/hooks/bin/git-passport/git-passport.py

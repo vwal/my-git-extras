@@ -503,7 +503,13 @@
     lals = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort | less
 
   #git-passport: manage commit identities (see details at https://github.com/frace/git-passport)
-    pp = !${HOME}/.git/hooks/bin/git-passport/git-passport.py
+    # show all available
+    pp = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -p
+    # show active
+    ppa = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -a
+    # delete active
+    ppd = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -d
+    # select (removes active even if exited!)
     pps = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -s
 
   #edit this file

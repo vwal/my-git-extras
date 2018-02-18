@@ -44,4 +44,4 @@ https://gist.github.com/emiller/6769886
 Note
 ----
 
-As of writing of this I'm using these aliases and scripts on Ubuntu 14.04 and 16.04 with Git 2.11.0 (from [Launchpad PPA](https://launchpad.net/~git-core/+archive/ubuntu/ppa), **ppa:git-core/ppa**). Most will likely work with Git 1.8.0+ or Git 1.7.0+ (`include` statement was added in Git 1.7.10), as well as on other platforms (OSX, etc..), but I have not tested them outside of Ubuntu, so as always, YMMV.
+As of writing of this I'm using these aliases and scripts on Ubuntu 14.04 and 16.04 with Git 2.16.1 (from [Launchpad PPA](https://launchpad.net/~git-core/+archive/ubuntu/ppa), **ppa:git-core/ppa**). Most will likely work with Git 1.8.0+ or Git 1.7.0+ (`include` statement was added in Git 1.7.10), as well as on other platforms (OSX, etc..), but I have not tested them outside of Ubuntu, so as always, YMMV.

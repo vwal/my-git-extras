@@ -504,13 +504,13 @@
 
   #git-passport: manage commit identities (see details at https://github.com/frace/git-passport)
     # show all available
-    pp = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -p
+    ppls = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -p
     # show active
-    ppa = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -a
+    ppsh = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -a
     # delete active
-    ppd = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -d
+    ppdel = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -d
     # select (removes active even if exited!)
-    pps = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -s
+    ppsel = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -s
 
   #edit this file
     eg = config --global -e

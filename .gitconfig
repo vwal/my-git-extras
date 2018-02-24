@@ -57,6 +57,8 @@
   #ABBR: config
     cnf = config
 
+  #standard push to origin
+    po = push origin
   #force push (e.g. to reset remote to a specific commit after local reset --hard <hash> or amended commit); req <remote> [<lb>:<rb>] as params
     pushard = push -f
 

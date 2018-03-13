@@ -129,6 +129,8 @@
     pushtorn = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD):$1 ; }; f"
   #set remote upstream for an existing local branch using 'origin' and the same branch name as local (NOTE: remote must also exist for this to work)
     setremor = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) ; }; f"
+  #set remote upstream for an existing local branch using 'origin' and a new branch name
+    setremorn = "!f() { git branch --set-upstream-to=origin/$1 ; }; f"
 
   #EXT (my-git-extras/scripts/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
   #usage: git publish-branch [-d] <branch> [repository]

@@ -225,12 +225,19 @@
   #ABBR: rebase
     rb = rebase
 
+  #abort rebase operation (stopped due to conflicts)
+    rba = rebase --abort
+  #continue rebase operation after merging
+    rbc = rebase --continue
+
   #interactive rebase; preserve merges (good for updating author info, for example); takes some HEAD as arg
     irbp = rebase -i -p 
   #interactive rebase for the given upstream
     irbu = rebase -i @{u}
   #interactive rebase to squash [previous] commits to the head
     irbh = "!f(){ git rebase -i HEAD~$1; };f"
+  #interactive rebase to specific commit
+    irbc = "!f(){ git rebase -i $1^; }; f"
 
   #ABBR: difftool (use default configured, i.e. Beyond Compare)
     dt = difftool
@@ -242,11 +249,6 @@
     mt = mergetool
   #use vimdiff in console as mergetool
     mtt = mergetool --tool=vimdiff
-
-  #abort rebase operation (stopped due to conflicts)
-    rba = rebase --abort
-  #continue rebase operation after merging
-    rbc = rebase --continue
 
   #EXT (my-git-extras/scripts/git-remote-updates): show updates on remote since the last common ancestor
     rup = remote-updates

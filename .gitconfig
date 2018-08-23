@@ -209,6 +209,9 @@
   #update remote refs and display branches that got updated
     ru = remote -v update
 
+  #update submodules recursively
+    subup = submodule update --recursive
+
   #refresh heads/refs from origin
     fo = fetch origin
   #refresh heads/refs from all remotes

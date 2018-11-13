@@ -183,6 +183,8 @@
     rem = remote
   #show known remote fetch/push URLs
     remotes = remote -v
+  #set (or change) remote fetch/push URLs, e.g. origin git@github.com:USERNAME/repo-name.git
+    setrem = remote set-url
   #add/update remote URL (requires remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
     addrem = add-set-remote 
   #remove remote (arg: only the remote name, such as "origin")
@@ -347,6 +349,7 @@
     rev = revert --no-commit --no-edit
 
   #remove staged entries (make them unstaged again; does not revert!)
+  #NOTE: this is essentially 'reset --mixed'
     res = reset
     unstage = reset
 
@@ -374,8 +377,10 @@
     amend = commit --amend -C HEAD
   #modify commit message for the most recent commit
     revise = commit --amend -m 
-  #undo the most recent commit (committed items are returned to stage)
+  #undo the most recent commit (committed items are returned to stage); keep any changes since then
     xx = reset --soft HEAD~1
+  #undo the most recent commit (committed items are returned to stage); wipe any changes since then
+    xxx = reset --hard HEAD~1
 
   #execute git command with fileMode off (e.g. ignore permissions changes)
     n = "!f(){ git -c core.fileMode=false $@; };f"

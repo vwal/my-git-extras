@@ -82,7 +82,9 @@
   #make an orphan branch (no parents, no history)
     orphan = "!f() { git checkout --orphan $1 && git rm -rf "."; }; f"
   #ABBR: branch
-    br = "!f() { git --no-pager branch ; }; f" 
+    br = branch
+  #display branches without pagination
+    brs = "!f() { git --no-pager branch ; }; f" 
   #display the current branch name (including detached head, orphan)
   #TODO: resolve SHA to branch(es) (as in 'c2b', such as with a detached head)
   #See: http://stackoverflow.com/questions/2706797/finding-what-branch-a-git-commit-came-from

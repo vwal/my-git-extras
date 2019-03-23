@@ -96,7 +96,7 @@
   #swap branches
     swap =  "!f() { git branch -m $1 ${1}.TMPTMPTMP && git branch -m $2 $1  && git branch -m ${1}.TMPTMPTMP $2 && git checkout $1 ; }; f"
   #substitute branch with another, and archive old with a datetime stamp
-    subbr = "!f() { DT=`date +%Y-%m-%d_%H%M` && git branch -m $1 ${1}-${DT} && git branch -m $2 $1 ; }; f"
+    subst = "!f() { DT=`date +%Y-%m-%d_%H%M` && git branch -m $1 ${1}-${DT} && git branch -m $2 $1 ; }; f"
   #add 'done-' label to branch name (rename)
     done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
   #drop (delete) a branch irrespecive of its merge status (be careful!)
@@ -156,6 +156,8 @@
 
   #ABBR: blame
     bl = blame
+  #log "blame"
+    lb = log -p -M --follow --stat --
   #invoke graphical blame for the given file (it can also be accessed via gitk)
     gbl = gui blame
 
@@ -215,6 +217,8 @@
   #update remote refs and display branches that got updated
     ru = remote -v update
 
+  #ABBR: submodule
+    sub = submodule
   #update submodules recursively
     subup = submodule update --init --recursive
 

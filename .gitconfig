@@ -32,19 +32,21 @@
     initc = "!f() { git add -A && git commit -m 'Initial content.' && echo && git log --cc --stat && echo '\nInitial content has been committed.\n' ; }; f"
 
   #add a tag to the current commit
-    addtag = tag -a 
+    addtag = tag -a
   #delete tag
     deltag = tag -d
   #push tags to origin
     pushtags = push origin --tags
   #list tags by date, from oldest to the most recent
     tbd = "!f() { git for-each-ref --format='%(*creatordate:raw)%(creatordate:raw) %(creatordate:short) %(refname) %(*objectname) %(objectname)' refs/tags | sort -n | awk '{ print $3, $5, $4 }' ; }; f"
+  #list tags with their descriptions
+    tagdesc = tag -n25
   #show last tag name and annotation
     lasttag = describe --tags --abbrev=0
     lt = describe --tags --abbrev=0
   #show last tag diff and details
-    ltdf = !git describe --exact-match --abbrev=0 | xargs git show    
-  #show tags list; NOTE: use 'ft' (git --fetch tags) first to get all tags 
+    ltdf = !git describe --exact-match --abbrev=0 | xargs git show
+  #show tags list; NOTE: use 'ft' (git --fetch tags) first to get all tags
     lst = "!f() { git log --no-walk --tags --pretty='%C(cyan)%h%Creset %d %Cblue%s%Creset' --decorate=full ; }; f"
   #find a tag, req: tag name or hash
     fat = "!f() { git --no-pager log --tags --no-walk --no-abbrev --pretty='%h %d %s' --decorate=full | grep --color=auto "$1" ; }; f"
@@ -62,10 +64,10 @@
   #force push (e.g. to reset remote to a specific commit after local reset --hard <hash> or amended commit); req <remote> [<lb>:<rb>] as params
     pushard = push -f
 
-  #clone a respository and init its submodules
-    cl = clone --recursive
+  #clone a repository and init its submodules
+    cl = clone --recurse-submodules
 
-  #ABBR: cherry-pick  
+  #ABBR: cherry-pick
     cp = cherry-pick
 
   #EXT (git-whistles/git-stash-and-checkout): stash current changes, checkout new branch, unstash changes for that branch
@@ -84,7 +86,7 @@
   #ABBR: branch
     br = branch
   #display branches without pagination
-    brs = "!f() { git --no-pager branch ; }; f" 
+    brs = "!f() { git --no-pager branch ; }; f"
   #display the current branch name (including detached head, orphan)
   #TODO: resolve SHA to branch(es) (as in 'c2b', such as with a detached head)
   #See: http://stackoverflow.com/questions/2706797/finding-what-branch-a-git-commit-came-from
@@ -93,10 +95,10 @@
     renbr = branch -m
   #swap branches
     swap =  "!f() { git branch -m $1 ${1}.TMPTMPTMP && git branch -m $2 $1  && git branch -m ${1}.TMPTMPTMP $2 && git checkout $1 ; }; f"
-  #substitute branch with another, and add archive old with a datetime stamp
-    sub = "!f() { DT=`date +%Y-%m-%d_%H%M` && git branch -m $1 ${1}-${DT} && git branch -m $2 $1 ; }; f"
+  #substitute branch with another, and archive old with a datetime stamp
+    subbr = "!f() { DT=`date +%Y-%m-%d_%H%M` && git branch -m $1 ${1}-${DT} && git branch -m $2 $1 ; }; f"
   #add 'done-' label to branch name (rename)
-    done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f" 
+    done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
   #drop (delete) a branch irrespecive of its merge status (be careful!)
     dropbr = branch -D
   #drop (delete) remote branch; args: repo, branch; e.g. droprembr origin somebranch
@@ -121,17 +123,17 @@
     cotb = checkout --track -b
   #"CheckOutTrackBranchOrigin", as above, but use 'origin' for the remote, and the remote branch name for the local branch name: [remotebranchname]
     cotbo = "!f() { git checkout --track -b $1 origin/$1 ; }; f"
-  #create a new branch and check it out, local only (no upstream); 
+  #create a new branch and check it out, local only (no upstream);
   #optimal for duplicating a local branch where you don't want to push back to the parent:
   #e.g. [localtargetbranch] [localsourcebranch], or [localtargetbranch] [origin/remotesourcebranch]
     lbr = checkout --no-track -b
   #push branch to 'origin' with the same name as local, and set tracking (usually optimal after duplicating local branch with 'lbr')
     pushtor = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD):$(git symbolic-ref --short HEAD) ; }; f"
-  #push branch to 'origin' with a different name as local, and set tracking
+  #push branch to 'origin' with a different name as local, and set tracking (req [new remote branch name])
     pushtorn = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD):$1 ; }; f"
   #set remote upstream for an existing local branch using 'origin' and the same branch name as local (NOTE: remote must also exist for this to work)
     setremor = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD) ; }; f"
-  #set remote upstream for an existing local branch using 'origin' and a new branch name
+  #set remote upstream for an existing local branch using 'origin' and a new branch name (req [new remote branch name])
     setremorn = "!f() { git branch --set-upstream-to=origin/$1 ; }; f"
 
   #EXT (my-git-extras/scripts/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
@@ -145,7 +147,7 @@
   #unset remote upstrem for an existing local branch
     unsetups = branch --unset-upstream
 
-  #EXT (my-git-extras/scripts/git-uncheckout): uncheckout a remote branch (cannot be current) to remove from local 
+  #EXT (my-git-extras/scripts/git-uncheckout): uncheckout a remote branch (cannot be current) to remove from local
     unco = uncheckout
   #EXT (my-git-extras/scripts/git-uncheckout-interactive): uncheckout remote branches interactively (to choose which ones to remove/keep on local)
     uncoint = uncheckout-interactive
@@ -163,12 +165,12 @@
   #display the last commit for the given branch (or current if not given)
     llv = branch -lvv
 
-  #ABBR: grep working tree for regexp (no binary file serach)
+  #ABBR: grep working tree for regexp (no binary file search)
     grep = grep -I
     gg = grep -I
   #case-insensitive grep working tree for regexp (no binary file search)
     ggi = grep -iI
-  #grep working tree for regexp from top level (no binary file search)
+  #grep working tree for regexp from the top level (no binary file search)
     gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
   #grep working tree; display filenames only for matches (no binary file search)
     ggno = grep -I --name-only
@@ -178,7 +180,7 @@
     ff = !git ls-files | grep -i
   #find string in code history (not in commit comments)
     grepcode = "!f() { git rev-list --all | xargs git grep $1; }; f"
-  
+
   ###see more git grep examples: http://stackoverflow.com/a/2929502/134536
 
   #ABBR: remote
@@ -188,20 +190,20 @@
   #set (or change) remote fetch/push URLs, e.g. origin git@github.com:USERNAME/repo-name.git
     setrem = remote set-url
   #add/update remote URL (requires remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
-    addrem = add-set-remote 
+    addrem = add-set-remote
   #remove remote (arg: only the remote name, such as "origin")
-    remrem = remote remove 
+    remrem = remote remove
   #set a different 'push' remote from 'pull/fetch' URL (requires [existing] remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
   #see: http://sleepycoders.blogspot.com/2012/05/different-git-push-pullfetch-urls.html for more detail
-    forkrem = remote set-url --push 
+    forkrem = remote set-url --push
 
-  #EXT (my-git-extras/scripts/git-show-remote-branch): show remote(s) for the current branch 
+  #EXT (my-git-extras/scripts/git-show-remote-branch): show remote(s) for the current branch
     rembr = show-remote-branch
   #show remote tracked branches for the local branches
   #TODO: convert this into a script; detect "no remotes"
     rems = for-each-ref --format='%(color:reverse cyan)%(refname:short)%(color:reset) <- %(color:cyan)%(upstream:short)%(color:reset)' refs/heads
   #show branch heads on the given remote (query remote)
-    rembrs = ls-remote --heads 
+    rembrs = ls-remote --heads
   #show tracked remote branches (known since the most recent fetch)
     trackbrs = branch -r
   #list remote-tracking and local branches
@@ -214,13 +216,13 @@
     ru = remote -v update
 
   #update submodules recursively
-    subup = submodule update --recursive
+    subup = submodule update --init --recursive
 
   #refresh heads/refs from origin
     fo = fetch origin
   #refresh heads/refs from all remotes
     fa = fetch --all
-  #fetch all tags (also those that are not directly acessible by the current references)
+  #fetch all tags (also those that are not directly accessible by the current references)
     ft = fetch --tags
 
   #ABBR: fetch
@@ -238,7 +240,7 @@
     rbc = rebase --continue
 
   #interactive rebase; preserve merges (good for updating author info, for example); takes some HEAD as arg
-    irbp = rebase -i -p 
+    irbp = rebase -i -p
   #interactive rebase for the given upstream
     irbu = rebase -i @{u}
   #interactive rebase to squash [previous] commits to the head
@@ -304,25 +306,25 @@
     meff = merge --ff-only --stat
   #pull (fetch + merge) from remote, require fast-forwardable (or HEAD to be good as-is); explicitly no rebasing (merge instead)
     puff = pull --ff --ff-only --no-rebase --stat
-    pu =  pull --ff --ff-only --no-rebase --stat  
+    pu =  pull --ff --ff-only --no-rebase --stat
 
   #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote
     purr = pull --ff --ff-only --rebase --stat
   #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote, including on a dirty local
     purrd = pull --ff --ff-only --rebase --autostash --stat
-  
+
   #ABBR: stash
     ss = stash
 
   #drop the [last item] in stash
-    ssdr = stash drop 
+    ssdr = stash drop
   #create a new branch out of stash (branchname required, stash number optional - uses last if not defined)
-    ssbr = stash branch 
+    ssbr = stash branch
   #stash all changes on tracked files, from the top of the work tree
     ssr = stash --keep-index
   #stash all changes, including untracked files
     ssu = stash --include-untracked
-  #stash all changes, including untracked and ignored files 
+  #stash all changes, including untracked and ignored files
     ssa = stash --all
   #stash interactively (since HEAD)
     ssi = stash --patch
@@ -378,7 +380,7 @@
   #add the currently staged changes to the most recent commit; do not modify the commit message
     amend = commit --amend -C HEAD
   #modify commit message for the most recent commit
-    revise = commit --amend -m 
+    revise = commit --amend -m
   #undo the most recent commit (committed items are returned to stage); keep any changes since then
     xx = reset --soft HEAD~1
   #undo the most recent commit (committed items are returned to stage); wipe any changes since then
@@ -407,7 +409,7 @@
     ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
   #show oneline commit log with graph; committer details; full SHA
     lf = log --graph --pretty=full-log --no-abbrev --date=relative
-  #like 'l' but selectable number of output lines as a param        
+  #like 'l' but selectable number of output lines as a param
     ln = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)[%an]%Creset' --abbrev-commit --date=relative -n
   #show commit log with full detail
     lna = log --cc --stat
@@ -427,9 +429,9 @@
     prevc = show --stat --oneline "HEAD^^..HEAD^"
   #show the affected filenames in the given commit
     aff = show --stat --oneline
-  #show the last commit with full date information 
+  #show the last commit with full date information
     lastdt = log --pretty=fuller --decorate --graph -n 1
-  #very abbreviated view of commits 
+  #very abbreviated view of commits
     lcl = log --pretty=oneline --abbrev-commit
   #show a simple list of the tags
     lt = tag -l -n1
@@ -440,8 +442,8 @@
     ref = reflog --no-abbrev --pretty=full-reflog
 
   #EXT (my-git-extras/scripts/git-show-commit): display details for a commit
-    sc = show-commit 
-  #show simple log with the names of the affected files 
+    sc = show-commit
+  #show simple log with the names of the affected files
     sca = log --name-only
 
   #list summary of files with deletions in the log
@@ -467,7 +469,7 @@
   #show changes to the HEAD (staged and unstaged)
     dfhd = diff HEAD
   #show changes in HEAD (to the previous commit)
-    lastcm = diff "HEAD^" HEAD        
+    lastcm = diff "HEAD^" HEAD
   #show diff for staged (cached); show diff between HEAD and stage
     dfstaged = diff --staged
   #list file names in stage
@@ -494,7 +496,7 @@
   #EXT (my-git-extras/scripts/git-wipe-file): wipe a single file
     wipefile = wipe-file
   #reset a single file (requires a filename as a param)
-    resetfile = checkout HEAD -- 
+    resetfile = checkout HEAD --
   #wipe current uncommitted (including staged and untracked) changes; deletes previously untracked!
     wipeall = !git add -A :/ && git commit -m 'WIPE SAVEPOINT' && git reset --hard HEAD~1
   #wipe unstaged tracked changes (does not touch staged, tracked or untracked)
@@ -503,7 +505,7 @@
     wipeallunstaged = wipe-unstaged
   #wipe untracked files
     wipeu = clean -df
-  #wipe untracked files, including ignored  
+  #wipe untracked files, including ignored
     wipeux = clean -dfx
 
   #show the current git configuration (global -> local)
@@ -532,7 +534,7 @@
 
   #edit this file
     eg = config --global -e
-       
+
 [format]
   numbered = auto
 [core]

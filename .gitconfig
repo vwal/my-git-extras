@@ -528,16 +528,6 @@
   #list defined git aliases sorted
     lals = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort | less
 
-  #git-passport: manage commit identities (see details at https://github.com/frace/git-passport)
-    # show all available
-    ppls = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -p
-    # show active
-    ppsh = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -a
-    # delete active
-    ppdel = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -d
-    # select (removes active even if exited!)
-    ppsel = !${HOME}/.git/hooks/bin/git-passport/git-passport.py -s
-
   #edit this file
     eg = config --global -e
 

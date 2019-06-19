@@ -384,7 +384,11 @@
   #create a WIP commit
     wip = !git add -u && git commit -m 'WIP'
   #add the currently staged changes to the most recent commit; do not modify the commit message
+  #note that the SHA/commit timestamp of the most recent commit are rewritten
     amend = commit --amend -C HEAD
+  #add the currently staged changes to a specific commit SHA; 
+  #note that all SHAs/commit timestamps are rewritten from the amended commit onwards
+    amend-to = "!f() { SHA=`git rev-parse \"$1\"`; git commit --fixup \"$SHA\" && GIT_SEQUENCE_EDITOR=true git rebase --interactive --autosquash \"$SHA^\"; }; f"
   #modify commit message for the most recent commit
     revise = commit --amend -m
   #undo the most recent commit (committed items are returned to stage); keep any changes since then
@@ -480,6 +484,7 @@
     dfstaged = diff --staged
   #list file names in stage
     lstaged = diff --staged --name-only
+    staged = diff --staged --name-only
   #show staged change statistics by file
     nstaged = diff --stat
   #show staged change statistics by directory
@@ -498,6 +503,8 @@
   #show changes between two given commits (SHAs)
     diffrange = log --format=fuller -p
 
+  #ABBR: verify-commit
+    vc = verify-commit
 
   #EXT (my-git-extras/scripts/git-wipe-file): wipe a single file
     wipefile = wipe-file
@@ -514,8 +521,8 @@
   #wipe untracked files, including ignored
     wipeux = clean -dfx
 
-  #show the current git configuration (global -> local)
-    thisconf = config --list
+  #show the current git configuration (global -> local); included config files such as *this* are excluded
+    allconf = config --list
   #show the global git configuration
     globalconf = config --list --global
   #show the local git configuration
@@ -531,6 +538,7 @@
   #edit this file
     eg = config --global -e
 
+# see https://git-scm.com/docs/git-config or `man git-config` for variable details
 [format]
   numbered = auto
 [core]
@@ -546,7 +554,7 @@
 [pager]
   status = false
 [push]
-  default = tracking
+  default = simple
 [rebase]
   autosquash = true
 [diff]
@@ -556,21 +564,24 @@
   prompt = false
 [difftool "bc4"]
   trustExitCode = true
-  cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\"
+  cmd = /usr/local/bin/bcompare \"$LOCAL\" \"$REMOTE\"
 [difftool "vim"]
   trustExitCode = true
   cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
+[gitflow "prefix"]
+	feature = feature-
+	release = release-
+	hotfix = hotfix-
+	support = support-
+	versiontag = v
 [merge]
   tool = bc4
 [mergetool]
   prompt = false
   keepBackup = false
-[difftool "vim"]
-  trustExitCode = true
-  cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
 [mergetool "bc4"]
   trustExitCode = true
-  cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+  cmd = /usr/local/bin/bcompare \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 [mergetool "vim"]
   trustExitCode = true
   cmd = vimdiff \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
@@ -586,9 +597,6 @@
   pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
   insteadOf = "gist:"
-[github]
-  user = vwal
-  token = <SNIP>
 [pretty]
   full-log = "format:%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr %x1b[0;37m@ %ai%Creset %C(cyan)[%an]%Creset%n"
   full-reflog = "format:%x1b[93;2m%h - %x1b[33m%>>(11)%gd%Creset - %x1b[1;37m%>>(14)%ar% %x1b[0;37m @ %ai%Creset -%x1b[1;31m %gs %x1b[0;31m(%s) %x1b[0;34m- %cn%n"

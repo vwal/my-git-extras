@@ -423,6 +423,8 @@
     ln = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)[%an]%Creset' --abbrev-commit --date=relative -n
   #show commit log with full detail
     lna = log --cc --stat
+  #show commit log with full detail + signatures
+    lnas = log --cc --stat --show-signature
   #show commit log with full diff patches
     lnap = log --patch
   #abbreviated (short) commit list
@@ -539,68 +541,72 @@
     eg = config --global -e
 
 # see https://git-scm.com/docs/git-config or `man git-config` for variable details
-[format]
-  numbered = auto
+[branch]
+  autosetupmerge = always
+  autosetuprebase = always
+[clean]
+  requireForce = true
 [core]
   legacyheaders = false
   whitespace = -trailing-space
   excludesfile = ~/.gitignore
   editor = joe
-[repack]
-  usedeltabaseoffset = true
-[branch]
-  autosetupmerge = always
-  autosetuprebase = always
-[pager]
-  status = false
-[push]
-  default = simple
-[rebase]
-  autosquash = true
+[credential]
+  helper = cache --timeout 3600
+[format]
+  numbered = auto
 [diff]
   mnemonicprefix = true
   tool = bc4
 [difftool]
   prompt = false
 [difftool "bc4"]
-  trustExitCode = true
+  trustexitcode = true
   cmd = /usr/local/bin/bcompare \"$LOCAL\" \"$REMOTE\"
 [difftool "vim"]
-  trustExitCode = true
+  trustexitcode = true
   cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
 [gitflow "prefix"]
-	feature = feature-
-	release = release-
-	hotfix = hotfix-
-	support = support-
-	versiontag = v
+  feature = feature-
+  release = release-
+  hotfix = hotfix-
+  support = support-
+  versiontag = v
 [merge]
   tool = bc4
 [mergetool]
   prompt = false
   keepBackup = false
 [mergetool "bc4"]
-  trustExitCode = true
+  trustexitcode = true
   cmd = /usr/local/bin/bcompare \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 [mergetool "vim"]
-  trustExitCode = true
+  trustexitcode = true
   cmd = vimdiff \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
-[url "git@github.com:"]
-  insteadOf = "gh:"
-  pushInsteadOf = "github:"
-  pushInsteadOf = "git://github.com/"
-[url "git://github.com/"]
-  insteadOf = "github:"
-[url "git@gist.github.com:"]
-  insteadOf = "gst:"
-  pushInsteadOf = "gist:"
-  pushInsteadOf = "git://gist.github.com/"
-[url "git://gist.github.com/"]
-  insteadOf = "gist:"
+[pager]
+  status = false
 [pretty]
   full-log = "format:%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr %x1b[0;37m@ %ai%Creset %C(cyan)[%an]%Creset%n"
   full-reflog = "format:%x1b[93;2m%h - %x1b[33m%>>(11)%gd%Creset - %x1b[1;37m%>>(14)%ar% %x1b[0;37m @ %ai%Creset -%x1b[1;31m %gs %x1b[0;31m(%s) %x1b[0;34m- %cn%n"
-[clean]
-  requireForce = true
-[credential]
-  helper = cache --timeout 3600
+[push]
+  default = simple
+[rebase]
+  autosquash = true
+[repack]
+  usedeltabaseoffset = true
+[status]
+  submodulesummary = true
+[tag]
+  forcesignannotated = false
+[url "git@github.com:"]
+  insteadOf = "gh:"
+  pushinsteadof = "github:"
+  pushinsteadof = "git://github.com/"
+[url "git://github.com/"]
+  insteadof = "github:"
+[url "git@gist.github.com:"]
+  insteadof = "gst:"
+  pushinsteadof = "gist:"
+  pushinsteadof = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+  insteadof = "gist:"

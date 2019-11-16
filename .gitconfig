@@ -550,7 +550,7 @@
   legacyheaders = false
   whitespace = -trailing-space
   excludesfile = ~/.gitignore
-  editor = joe
+  editor = nvim
 [credential]
   helper = cache --timeout 3600
 [format]

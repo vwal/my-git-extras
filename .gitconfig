@@ -322,8 +322,8 @@
   #ABBR: stash; use -m for a comment
     ss = stash
 
-  #stash single file; use -m for a comment
-    sssf = stash push
+  #stash a single file; use -m for a comment
+    ssf = stash push
   #drop the [last item] in stash
     ssdr = stash drop
   #create a new branch out of stash (branchname required, stash number optional - uses last if not defined)

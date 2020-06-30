@@ -319,9 +319,11 @@
   #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote, including on a dirty local
     purrd = pull --ff --ff-only --rebase --autostash --stat
 
-  #ABBR: stash
+  #ABBR: stash; use -m for a comment
     ss = stash
 
+  #stash single file; use -m for a comment
+    sssf = stash push
   #drop the [last item] in stash
     ssdr = stash drop
   #create a new branch out of stash (branchname required, stash number optional - uses last if not defined)

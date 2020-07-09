@@ -302,6 +302,8 @@
 
   #ABBR: merge
     mg = merge
+  #abort merge
+    mga = merge --abort
   #merge master
     mgm = merge master
 

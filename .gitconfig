@@ -87,6 +87,8 @@
     orphan = "!f() { git checkout --orphan $1 && git rm -rf "."; }; f"
   #ABBR: branch
     br = branch
+  #show current branch name
+    whereami = branch --show-current
   #display branches without pagination
     brs = "!f() { git --no-pager branch ; }; f"
   #display the current branch name (including detached head, orphan)
@@ -103,6 +105,8 @@
     done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
   #drop (delete) a branch irrespecive of its merge status (be careful!)
     dropbr = branch -D
+  #drop (delete) all but master and the current branch (be careful!)
+    cleanbrs = "!f() { git branch | grep -v 'master' | grep -v '\\*' | xargs git branch -D ; }; f"
   #drop (delete) remote branch; args: repo, branch; e.g. droprembr origin somebranch
     droprembr = "!f() { git push $1 --delete $2; }; f"
   #show local and remote branches a commit (SHA) occurs in
@@ -198,8 +202,20 @@
   #remove remote (arg: only the remote name, such as "origin")
     remrem = remote remove
   #set a different 'push' remote from 'pull/fetch' URL (requires [existing] remote name and URL, e.g. origin git@github.com:/USERNAME/OTHERREPO.git)
-  #see: http://sleepycoders.blogspot.com/2012/05/different-git-push-pullfetch-urls.html for more detail
+  #see: http://blog.yuriy.tymch.uk/2012/05/different-git-push-pullfetch-urls.html for more detail
     forkrem = remote set-url --push
+
+  # update a branch (also without checkout): e.g. git update somebranch (on or off 'somebranch')
+  # update a branch from upstream remote: git update somebranch upstream
+  update = "!fn() { \
+    repo=${2:-origin}; \
+    if [[ $(git rev-parse --abbrev-ref HEAD) = \"$1\" ]]; \
+    then \
+        git pull \"${repo}\"; \
+    else \
+        git fetch \"${repo}\" \"$1\":\"$1\"; \
+    fi; \
+    }; fn"
 
   #EXT (my-git-extras/scripts/git-show-remote-branch): show remote(s) for the current branch
     rembr = show-remote-branch
@@ -246,6 +262,10 @@
     rba = rebase --abort
   #continue rebase operation after merging
     rbc = rebase --continue
+
+  #reset all of the commit dates to the author dates so your commit logs show up in chronological order instead of the moment of the rebase
+  #e.g. 'git rd origin/master' while on a feature branch
+    rd = rebase --committer-date-is-author-date
 
   #interactive rebase; preserve merges (good for updating author info, for example); takes some HEAD as arg
     irbp = rebase -i -p

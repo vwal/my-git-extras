@@ -4,20 +4,20 @@ GIT_TOPLEVEL=`git rev-parse --show-toplevel`
 
 echo
 echo "Ignored by repo (assume-unchanged); tracked only:"
-echo "-----------------------------------"
+echo "-------------------------------------------------"
 
 git ls-files -v ${GIT_TOPLEVEL} | grep "^[a-z]" | sed "s/^\w\s//"
 
 echo
 echo "Ignored by repo (.git/info/exclude); untracked only:"
-echo "------------------------------------"
+echo "----------------------------------------------------"
 
 cat ${GIT_TOPLEVEL}/.git/info/exclude | grep -v -e "^#"
 
 echo
 echo "Ignored by .gitignore (from repo top level); untracked only:"
-echo -n "--------------------------------------------"
+echo "------------------------------------------------------------"
 
-find ${GIT_TOPLEVEL} -name ".gitignore" -printf "\n%p:\n" -exec cat {} \;
+find ${GIT_TOPLEVEL} -name ".gitignore" -print0 | xargs cat
 
 echo

@@ -233,7 +233,7 @@
   #show this repo's origin URL
     rsop = config --get remote.origin.url
   #show this repo's origin name
-    rson = basename $(git remote get-url origin) .git
+    rson = "!f() { basename $(git remote get-url origin) .git ; }; f"
   #update remote refs and display branches that got updated
     ru = remote -v update
 

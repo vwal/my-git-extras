@@ -106,7 +106,7 @@
   #drop (delete) a branch irrespecive of its merge status (be careful!)
     dropbr = branch -D
   #drop (delete) all but master and the current branch (be careful!)
-    cleanbrs = "!f() { git branch | grep -v 'master' | grep -v '\\*' | xargs git branch -D ; }; f"
+    purgebrs = "!f() { git branch | grep -v 'master' | grep -v '\\*' | xargs git branch -D ; }; f"
   #drop (delete) remote branch; args: repo, branch; e.g. droprembr origin somebranch
     droprembr = "!f() { git push $1 --delete $2; }; f"
   #show local and remote branches a commit (SHA) occurs in

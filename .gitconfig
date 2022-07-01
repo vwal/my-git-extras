@@ -402,7 +402,7 @@
     untrackignored = !git rm -r --cached . && git add .
 
   #commit with a message
-    x = commit -m
+    x = commit -S -m
   #add all and commit with a message (doesn't add new files)
     xa = commit -a -m
   #stage all and commit in one go
@@ -449,6 +449,8 @@
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)[%an]%Creset' --abbrev-commit --date=relative
   #show commit log with full details  
     ll = log --abbrev-commit
+  #show commit log with full details + signatures
+    lls = log --abbrev-commit --show-signature
   #show commit log with full details + graph
 	  lll = log --abbrev-commit --graph    
   #show oneline commit log with commit dates

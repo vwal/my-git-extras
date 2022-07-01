@@ -58,19 +58,20 @@
   #ABBR: describe
     desc = describe
 
-  #ABBR: config
-    cnf = config
-
   #standard push to origin
     po = push origin
   #force push (e.g. to reset remote to a specific commit after local reset --hard <hash> or amended commit); req <remote> [<lb>:<rb>] as params
     pushard = push -f
+  #force push protecting any possible subsequent updates on the remote
+    pf = push --force-with-lease
 
+  #ABBR: clone
+    cl = clone
   #clone a repository and init its submodules
-    cl = clone --recurse-submodules
+    cls = clone --recurse-submodules
 
   #ABBR: cherry-pick
-    cp = cherry-pick
+    cpick = cherry-pick
 
   #EXT (git-whistles/git-stash-and-checkout): stash current changes, checkout new branch, unstash changes for that branch
     co = stash-and-checkout
@@ -105,8 +106,10 @@
     done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
   #drop (delete) a branch irrespecive of its merge status (be careful!)
     dropbr = branch -D
-  #drop (delete) all but master and the current branch (be careful!)
-    purgebrs = "!f() { git branch | grep -v 'master' | grep -v '\\*' | xargs git branch -D ; }; f"
+  #drop (delete) all but master/main and the current branch (be careful!)
+    purgebrs = "!f() { git branch | grep -v 'master' | grep -v 'main' | grep -v '\\*' | xargs git branch -D ; }; f"
+  #delete selected branches; requires fzf: https://github.com/junegunn/fzf)
+    delbrs = "!f() { git branch | grep -v '\\*' | grep -v 'master' | grep -v 'main' | fzf --multi | xargs git branch --delete --force ; }; f"
   #drop (delete) remote branch; args: repo, branch; e.g. droprembr origin somebranch
     droprembr = "!f() { git push $1 --delete $2; }; f"
   #show local and remote branches a commit (SHA) occurs in
@@ -157,9 +160,8 @@
     unco = uncheckout
   #EXT (my-git-extras/scripts/git-uncheckout-interactive): uncheckout remote branches interactively (to choose which ones to remove/keep on local)
     uncoint = uncheckout-interactive
-  #checkout master branch
-    master = stash-and-checkout master
-
+  #checkout master/main branch
+    master = "!f() { git branch | grep 'master\\|main' | tr -d \\* | xargs git stash-and-checkout ; };f"
   #ABBR: blame
     bl = blame
   #log "blame"
@@ -248,6 +250,9 @@
     fa = fetch --all
   #fetch all tags (also those that are not directly accessible by the current references)
     ft = fetch --tags
+  #fetch everything and prune local branches
+    fall = fetch --all --tags --prune
+
 
   #ABBR: fetch
     f = fetch
@@ -327,7 +332,7 @@
   #abort merge
     mga = merge --abort
   #merge master
-    mgm = merge master
+    mgm = "!f() { git branch | grep 'master\\|main' | tr -d \\* | xargs git merge ; };f"
 
   #test merge against given branch to see if it would merge without conflicts (nothing is done)
     mergetest = "!f(){ git merge --no-commit --no-ff $1; git merge --abort; echo 'Merge aborted'; };f "
@@ -387,10 +392,7 @@
   #remove staged entries (make them unstaged again; does not revert!)
   #NOTE: this is essentially 'reset --mixed'
     res = reset
-    unstage = reset
-
-  #ABBR: remove
-    rm = remove
+    unstage = reset HEAD
 
   #remove from index all deleted files that were deleted with OS rm, and not with ´git rm´.
     rma = !git ls-files -z --deleted | xargs -0 git rm
@@ -404,7 +406,7 @@
   #add all and commit with a message (doesn't add new files)
     xa = commit -a -m
   #stage all and commit in one go
-    ac = "!f(){ git add -A :/; git commit -m \"${*:- }\"; };f"
+    ac = "!f() { git add -A :/; git commit -m \"${*:- }\" ; }; f"
   #create a SAVEPOINT commit
     save = !git add -A :/ && git commit -m 'SAVEPOINT'
   #create a WIP commit
@@ -412,18 +414,22 @@
   #add the currently staged changes to the most recent commit; do not modify the commit message
   #note that the SHA/commit timestamp of the most recent commit are rewritten
     amend = commit --amend -C HEAD
+  #fixup HEAD, don't run any hooks
+    fixup = commit --no-verify --fixup HEAD
   #add the currently staged changes to a specific commit SHA; 
   #note that all SHAs/commit timestamps are rewritten from the amended commit onwards
     amend-to = "!f() { SHA=`git rev-parse \"$1\"`; git commit --fixup \"$SHA\" && GIT_SEQUENCE_EDITOR=true git rebase --interactive --autosquash \"$SHA^\"; }; f"
   #modify commit message for the most recent commit
     revise = commit --amend -m
   #undo the most recent commit (committed items are returned to stage); keep any changes since then
-    xx = reset --soft HEAD~1
+    xx = reset --soft HEAD^
+  #undo the most recent commit and unstage
+    xxu = "!f() { git reset --soft HEAD^ ; git reset HEAD ; }; f"
   #undo the most recent commit (committed items are returned to stage); wipe any changes since then
-    xxx = reset --hard HEAD~1
+    xxx = reset --hard HEAD^
 
   #execute git command with fileMode off (e.g. ignore permissions changes)
-    n = "!f(){ git -c core.fileMode=false $@; };f"
+    n = "!f() { git -c core.fileMode=false $@ ; }; f"
 
   #ABBR: tag
     t = tag
@@ -441,6 +447,10 @@
 
   #show oneline commit log with graph; committer details
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)[%an]%Creset' --abbrev-commit --date=relative
+  #show commit log with full details  
+    ll = log --abbrev-commit
+  #show commit log with full details + graph
+	  lll = log --abbrev-commit --graph    
   #show oneline commit log with commit dates
     ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
   #show oneline commit log with graph; committer details; full SHA
@@ -534,6 +544,11 @@
   #ABBR: verify-commit
     vc = verify-commit
 
+  #find commits for a given file (req: filename)
+    ffile = log -- 
+  #restore a file from an old commit (req SHA ($1), filename ($2))
+    rfile = "!f() { git checkout $1 -- $2 ; }; f"
+
   #EXT (my-git-extras/scripts/git-wipe-file): wipe a single file
     wipefile = wipe-file
   #reset a single file (requires a filename as a param)
@@ -558,12 +573,16 @@
   #show currently available git commands
     gcom = help -a
 
+  #ABBR: config
+    cnf = config
+  #"ConfigShowOrigin"; where does config come from?
+    cnfsh = config --list --show-origin
   #list defined git aliases
     lal = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | less
   #list defined git aliases sorted
     lals = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort | less
 
-  #edit this file
+  #edit the global .gitconfig (not this file since this is included from the global)
     eg = config --global -e
 
 # see https://git-scm.com/docs/git-config or `man git-config` for variable details
@@ -618,6 +637,7 @@
   default = simple
 [rebase]
   autosquash = true
+  missingCommitsCheck = warn
 [repack]
   usedeltabaseoffset = true
 [status]

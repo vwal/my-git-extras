@@ -164,14 +164,10 @@
     master = "!f() { git branch | grep 'master\\|main' | tr -d \\* | xargs git stash-and-checkout ; };f"
   #ABBR: blame
     bl = blame
-  #log "blame"
+  #log "blame"; requires a ref as a param
     lb = log -p -M --follow --stat --
-  #invoke graphical blame for the given file (it can also be accessed via gitk)
-    gbl = gui blame
-
   #display last commit date/committer for each local or tracked remote branch
     llb = "!f(){ git status -sb;git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)  (%(authorname))'; };f"
-
   #display the last commit for the given branch (or current if not given)
     llv = branch -lvv
 
@@ -452,7 +448,7 @@
   #show commit log with full details + signatures
     lls = log --abbrev-commit --show-signature
   #show commit log with full details + graph
-	  lll = log --abbrev-commit --graph    
+    lll = log --abbrev-commit --graph    
   #show oneline commit log with commit dates
     ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
   #show oneline commit log with graph; committer details; full SHA

@@ -39,6 +39,8 @@
     pushtags = push origin --tags
   #delete a tag at origin (arg: tag name to delete)
     delremtag = push --delete origin 
+  #show all remote tags at origin
+    remtags = ls-remote --tags origin
   #list tags by date, from oldest to the most recent
     tbd = "!f() { git for-each-ref --format='%(*creatordate:raw)%(creatordate:raw) %(creatordate:short) %(refname) %(*objectname) %(objectname)' refs/tags | sort -n | awk '{ print $3, $5, $4 }' ; }; f"
   #list tags with their descriptions

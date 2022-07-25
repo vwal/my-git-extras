@@ -75,13 +75,21 @@
   #ABBR: cherry-pick
     cpick = cherry-pick
 
-  #EXT (git-whistles/git-stash-and-checkout): stash current changes, checkout new branch, unstash changes for that branch
-    co = stash-and-checkout
+  #ABBR: checkout
+    co = checkout
+  #EXT (git-whistles/git-stash-and-checkout): stash current changes, checkout new branch, unstash changes for that 1anch
+    cos = stash-and-checkout
+  #checkout master/main branch; no stash/pop
+    master = "!f() { git branch | grep 'master\\|main' | tr -d \\* | xargs git checkout ; };f"
+  #checkout master/main branch; with stash & pop
+    masters = "!f() { git branch | grep 'master\\|main' | tr -d \\* | xargs git stash-and-checkout ; };f"
+  #checkout another branch via visual menu; no stash/pop (requires fzf: https://github.com/junegunn/fzf)
+    chbr  = "!f() { git branch | grep -v '\\*' | fzf | xargs git checkout ; }; f"
+  #checkout another branch via visual menu; with stash & pop (requires fzf: https://github.com/junegunn/fzf)
+    chbrs  = "!f() { git branch | grep -v '\\*' | fzf | xargs git stash-and-checkout ; }; f"
   #check out a single tag ONLY (such as, for deployment)
   #req: <tag> <repository>
     coone = "!f() { git clone -b "$1" --single-branch --depth 1 $2 ; }; f"
-  #ABBR: checkout
-    cot = checkout
   #checkout a tag
     cotg = "!f() { git checkout tags/$1 ; }; f"
   #EXT (my-git-extras/scripts/git-checkout-all): track all available branches from the origin
@@ -110,7 +118,7 @@
     dropbr = branch -D
   #drop (delete) all but master/main and the current branch (be careful!)
     purgebrs = "!f() { git branch | grep -v 'master' | grep -v 'main' | grep -v '\\*' | xargs git branch -D ; }; f"
-  #delete selected branches; requires fzf: https://github.com/junegunn/fzf)
+  #delete selected branches (requires fzf: https://github.com/junegunn/fzf)
     delbrs = "!f() { git branch | grep -v '\\*' | grep -v 'master' | grep -v 'main' | fzf --multi | xargs git branch --delete --force ; }; f"
   #drop (delete) remote branch; args: repo, branch; e.g. droprembr origin somebranch
     droprembr = "!f() { git push $1 --delete $2; }; f"
@@ -162,8 +170,6 @@
     unco = uncheckout
   #EXT (my-git-extras/scripts/git-uncheckout-interactive): uncheckout remote branches interactively (to choose which ones to remove/keep on local)
     uncoint = uncheckout-interactive
-  #checkout master/main branch
-    master = "!f() { git branch | grep 'master\\|main' | tr -d \\* | xargs git stash-and-checkout ; };f"
   #ABBR: blame
     bl = blame
   #log "blame"; requires a ref as a param

@@ -559,8 +559,8 @@
     wipefile = wipe-file
   #reset a single file (requires a filename as a param)
     resetfile = checkout HEAD --
-  #wipe current uncommitted (including staged and untracked) changes; deletes previously untracked!
-    wipeall = !git add -A :/ && git commit -m 'WIPE SAVEPOINT' && git reset --hard HEAD~1
+  #wipe current uncommitted (including staged and untracked) changes; deletes previously untracked; leaves a stash behind
+    wipeall = "!f() { git stash --all --message \"WIPE SAVEPOINT on `date`\" && git reset --hard HEAD ; }; f" 
   #wipe unstaged tracked changes (does not touch staged, tracked or untracked)
     wipeunstaged = checkout -- .
   #EXT (my-git-extras/scripts/wipe-unstaged): wipe current unstaged (including untracked) changes; deletes untracked!

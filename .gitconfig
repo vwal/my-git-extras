@@ -137,8 +137,8 @@
     coasis = checkout --track
   #check out an origin remote branch with its name as-is and start tracking it: [remotebranchname]
     cooasis = "!f() { git checkout --track origin/$1 ; }; f"
-  #check out an origin remote branch via visual menu with its name as-is and start tracking it (requires fzf: https://github.com/junegunn/fzf)
-    cooasisv = "!f() { git branch -r | fzf | xargs -J % git checkout --track ; }; f"
+  #"Visual CheckOut Remote"; check out a remote branch via visual menu with its name as-is and start tracking it (requires fzf: https://github.com/junegunn/fzf)
+    vcor = "!f() { git branch -r | fzf | xargs -J % git checkout --track ; }; f"
   #"CheckOutTrackBranch"; create a new branch, set up its upstream, start tracking it, and check it out;
   #use this also to checkout a remote branch: [localbranchname] [remote]/[remotebranchname]; really same as 'branch' by itself
     cotb = checkout --track -b

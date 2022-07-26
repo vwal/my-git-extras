@@ -139,14 +139,14 @@
     cooasis = "!f() { git checkout --track origin/$1 ; }; f"
   #"Visual CheckOut Remote"; check out a remote branch via visual menu with its name as-is and start tracking it (requires fzf: https://github.com/junegunn/fzf)
     vcor = "!f() { git branch -r | fzf | xargs -J % git checkout --track ; }; f"
-  #"CheckOutTrackBranch"; create a new branch, set up its upstream, start tracking it, and check it out;
+  #"CheckOutTrackBranch"; create a new branch, set up its upstream, start tracking it, and check it out (opposite of 'lbr')
   #use this also to checkout a remote branch: [localbranchname] [remote]/[remotebranchname]; really same as 'branch' by itself
     cotb = checkout --track -b
   #"CheckOutTrackBranchOrigin", as above, but use 'origin' for the remote, and the remote branch name for the local branch name: [remotebranchname]
     cotbo = "!f() { git checkout --track -b $1 origin/$1 ; }; f"
-  #create a new branch and check it out, local only (no upstream);
-  #optimal for duplicating a local branch where you don't want to push back to the parent:
-  #e.g. [localtargetbranch] [localsourcebranch], or [localtargetbranch] [origin/remotesourcebranch]
+  #create a new branch and check it out, local only (no upstream; opposite of 'cotb');
+  #optimal for duplicating a local branch where you don't [yet] want to push back to the parent:
+  #e.g. [localtargetbranch] [localsourcebranch], or [localtargetbranch] [origin/remotesourcebranch], or just [localtargetbranch] (when branching off of the current branch)
     lbr = checkout --no-track -b
   #push branch to 'origin' with the same name as local, and set tracking (usually optimal after duplicating local branch with 'lbr')
     pushtor = "!f() { git push --set-upstream origin $(git symbolic-ref --short HEAD):$(git symbolic-ref --short HEAD) ; }; f"
@@ -234,8 +234,10 @@
     rembrs = ls-remote --heads
   #show tracked remote branches (known since the most recent fetch)
     trackbrs = branch -r
+  #list remote-tracking branches (if any) configured for the local branches
+    bvv = branch -vv
   #list remote-tracking and local branches
-    lab = branch -avv
+    bav = branch -avv
   #show trackable branches and their statuses on the repo's origin
     rso = remote show origin
   #show this repo's origin URL
@@ -337,9 +339,9 @@
     mg = merge
   #abort merge
     mga = merge --abort
-  #merge master
-    mgm = "!f() { git branch | grep 'master\\|main' | tr -d \\* | xargs git merge ; };f"
-
+  #merge master/main to the current branch (updates master first; this requires git 2.20 or newer because of the nested alias 'update')
+  #NOTE: this discerns between main/master and looks up the origin name in case it is not 'origin'
+    mgm = "!f() { MASTER=$(git branch | grep 'master\\|main') && ORIGIN=$(git for-each-ref --format='%(upstream:short)' $(git rev-parse --symbolic-full-name master) | grep -Eo '^[^/]+') && git update $MASTER $ORIGIN && git merge $MASTER ; };f"
   #test merge against given branch to see if it would merge without conflicts (nothing is done)
     mergetest = "!f(){ git merge --no-commit --no-ff $1; git merge --abort; echo 'Merge aborted'; };f "
 
@@ -513,7 +515,6 @@
   #status in short format (including the branch and tracking info)
     st = status -sb
   #extended verbose status
-    #ste = !git remote update -p && git status --long -vv
     ste = status --long -vv
   #show information about files in the index and the working tree
     ls = ls-files

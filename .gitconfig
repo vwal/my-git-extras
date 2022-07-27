@@ -363,6 +363,10 @@
     ssf = stash push
   #drop the [last item] in stash
     ssdr = stash drop
+  #drop a specific stash index (as listed with 'stash list')
+    ssdri = "!f(){ git stash drop stash@{$1} ; };f"
+  #drop all stashes for this repo
+    ssdrall = stash clear
   #create a new branch out of stash (branchname required, stash number optional - uses last if not defined)
     ssbr = stash branch
   #stash all changes on tracked files, from the top of the work tree
@@ -601,6 +605,7 @@
 [clean]
   requireForce = true
 [core]
+	pager = less -FX
   legacyheaders = false
   whitespace = -trailing-space
   excludesfile = ~/.gitignore

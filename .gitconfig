@@ -598,13 +598,14 @@
   #edit the global .gitconfig (not this file since this is included from the global)
     eg = config --global -e
 
-# see https://git-scm.com/docs/git-config or `man git-config` for variable details
+#see https://git-scm.com/docs/git-config or `man git-config` for variable details
 [branch]
   autosetupmerge = always
   autosetuprebase = always
 [clean]
   requireForce = true
 [core]
+  #use less only for longer outputs
   pager = less -FX
   legacyheaders = false
   whitespace = -trailing-space

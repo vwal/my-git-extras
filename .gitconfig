@@ -605,7 +605,7 @@
 [clean]
   requireForce = true
 [core]
-	pager = less -FX
+  pager = less -FX
   legacyheaders = false
   whitespace = -trailing-space
   excludesfile = ~/.gitignore

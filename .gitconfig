@@ -71,6 +71,10 @@
     cl = clone
   #clone a repository and init its submodules
     cls = clone --recurse-submodules
+  #clone a repository as a mirror
+    mirror = clone --mirror
+  # clone a repository as a bare repo
+    bare = clone --bare
 
   #ABBR: cherry-pick
     cpick = cherry-pick
@@ -597,6 +601,17 @@
 
   #edit the global .gitconfig (not this file since this is included from the global)
     eg = config --global -e
+
+  #to use LFS, git-lfs must be installed (e.g. `brew install git-lfs`)
+  #and initialized (`git lfs install`, which adds an entry in the global .gitconfig)
+  #ref. https://git-lfs.github.com/
+
+  #track LFS files; e.g. git lfs track "*.tar.gz"
+    lftr = lfs track
+  #list all LFS files in a repo
+    lfls = lfs ls-files --all
+  #pull LFS files (e.g. to a local bare repo, or to a repo which was cloned without git-lfs present)
+    lfp = lfs pull
 
 #see https://git-scm.com/docs/git-config or `man git-config` for variable details
 [branch]

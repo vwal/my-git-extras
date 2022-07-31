@@ -142,7 +142,7 @@
   #check out an origin remote branch with its name as-is and start tracking it: [remotebranchname]
     cooasis = "!f() { git checkout --track origin/$1 ; }; f"
   #"Visual CheckOut Remote"; check out a remote branch via visual menu with its name as-is and start tracking it (requires fzf: https://github.com/junegunn/fzf)
-    vcor = "!f() { git branch -r | fzf | xargs -J % git checkout --track ; }; f"
+    vcor = "!f() { git branch -r | fzf | xargs git checkout --track ; }; f"
   #"CheckOutTrackBranch"; create a new branch, set up its upstream, start tracking it, and check it out (opposite of 'lbr')
   #use this also to checkout a remote branch: [localbranchname] [remote]/[remotebranchname]; really same as 'branch' by itself
     cotb = checkout --track -b
@@ -391,7 +391,7 @@
   #ABBR: add
     a = add
 
-  #stage all changes
+  #stage all changes in the current branch
     aa = add -A :/
   #stage selected patches
     ap = add -p
@@ -417,7 +417,7 @@
   #untracks all .gitignored items (NOTE: COMMIT ANY CHANGES FIRST!)
     untrackignored = !git rm -r --cached . && git add .
 
-  #commit with a message
+  #commit with a message and GPG sign the commit
     x = commit -S -m
   #add all and commit with a message (doesn't add new files)
     xa = commit -a -m
@@ -531,10 +531,14 @@
     df = diff
   #inline diff
     dfi = diff --word-diff
-  #show changes to the HEAD (staged and unstaged)
+  #show changes to the HEAD (staged and unstaged but not untracked)
     dfhd = diff HEAD
   #show changes in HEAD (to the previous commit)
     lastcm = diff "HEAD^" HEAD
+  # show changes to a specific file in HEAD (to the previous commit); requires fzf: https://github.com/junegunn/fzf
+    lastcmf = "!f() { git diff --name-only HEAD HEAD^ | fzf | xargs git -p diff HEAD HEAD^ ; };f"
+  # show changes to a specific file in HEAD (to the previous commit) in visual diff tool; requires fzf: https://github.com/junegunn/fzf
+    lastcmfv = "!f() { git diff --name-only HEAD HEAD^ | fzf | xargs git difftool HEAD HEAD^ ; };f"
   #show diff for staged (cached); show diff between HEAD and stage
     dfstaged = diff --staged
   #list file names in stage
@@ -547,6 +551,8 @@
 
   #show filenames affected by a given commit
     cfiles = show --name-status
+  #show last changes to a specific file; requires fzf: https://github.com/junegunn/fzf
+    fchanges = "!f() { FILENM=$(git --no-pager ls-files | fzf ) && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git --no-pager show -s $SHA && git --no-pager diff $SHA $SHA^ $FILENM ; }; f"
   #show HEAD offset
     shead = "!f() { git show HEAD@{$1}; }; f"
   #show changes in a specific commit; NOTE: http://stackoverflow.com/a/25395673/134536; NOTE: can also use 'show'
@@ -620,8 +626,6 @@
 [clean]
   requireForce = true
 [core]
-  #use less only for longer outputs
-  pager = less -FX
   legacyheaders = false
   whitespace = -trailing-space
   excludesfile = ~/.gitignore
@@ -637,7 +641,7 @@
   prompt = false
 [difftool "bc4"]
   trustexitcode = true
-  cmd = /usr/local/bin/bcompare \"$LOCAL\" \"$REMOTE\"
+  cmd = /usr/local/bin/bcomp \"$LOCAL\" \"$REMOTE\"
 [difftool "vim"]
   trustexitcode = true
   cmd = vimdiff \"$LOCAL\" \"$REMOTE\"
@@ -660,6 +664,11 @@
   cmd = vimdiff \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 [pager]
   status = false
+  #use less only for longer outputs
+  pager = less -FX
+  log = less -FX
+  show = less -FX
+  diff = less -FX
 [pretty]
   full-log = "format:%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr %x1b[0;37m@ %ai%Creset %C(cyan)[%an]%Creset%n"
   full-reflog = "format:%x1b[93;2m%h - %x1b[33m%>>(11)%gd%Creset - %x1b[1;37m%>>(14)%ar% %x1b[0;37m @ %ai%Creset -%x1b[1;31m %gs %x1b[0;31m(%s) %x1b[0;34m- %cn%n"

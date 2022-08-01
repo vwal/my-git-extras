@@ -551,8 +551,10 @@
 
   #show filenames affected by a given commit
     cfiles = show --name-status
-  #show last changes to a specific file; requires fzf: https://github.com/junegunn/fzf
-    fchanges = "!f() { FILENM=$(git --no-pager ls-files | fzf ) && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git --no-pager show -s $SHA && git --no-pager diff $SHA $SHA^ $FILENM ; }; f"
+  #show last changes to a specified file
+    lfc = "!f() { FILENM=$1 && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git --no-pager show -s $SHA && git --no-pager diff $SHA $SHA^ $FILENM ; }; f"
+  #show last changes to a selected file; requires fzf: https://github.com/junegunn/fzf
+    lfcsel = "!f() { FILENM=$(git --no-pager ls-files | fzf ) && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git --no-pager show -s $SHA && git --no-pager diff $SHA $SHA^ $FILENM ; }; f"
   #show HEAD offset
     shead = "!f() { git show HEAD@{$1}; }; f"
   #show changes in a specific commit; NOTE: http://stackoverflow.com/a/25395673/134536; NOTE: can also use 'show'

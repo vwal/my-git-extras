@@ -194,8 +194,10 @@
     gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
   #grep working tree; display filenames only for matches (no binary file search)
     ggno = grep -I --name-only
-  #search log for commit comments with a given string
-    findstring = log --pretty=format:'%Cgreen%H %Cblue%s' --name-status --grep
+  #search logs for commit comments containing the given pattern
+    find = log --all --pretty=format:'%C(green)%h %C(yellow)@%as %an: %C(brightwhite)%s\n %b%Creset' --name-status --grep
+  #search logs for commit comments containing the given pattern (case-insensitive)
+    findi = log --all --pretty=format:'%C(green)%h %C(yellow)@%as %an: %C(brightwhite)%s\n %b%Creset' --name-status -i --grep
   #locate a file in the codebase (req filename)
     ff = !git ls-files | grep -i
   #find string in code history (not in commit comments)

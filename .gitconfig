@@ -361,9 +361,19 @@
   #pull (fetch + rebase) from remote, require fast-forwardable & rebase local to the HEAD of remote, including on a dirty local
     purrd = pull --ff --ff-only --rebase --autostash --stat
 
-  #ABBR: stash; use -m for a comment
-    ss = stash
+  #ABBR: stash (no args: tracked only)
+    st = stash
 
+  #common stash: stash all tracked and untracked; use -m for a comment
+    ss = stash --include-untracked
+  #stash tracked and untracked; arg: comment
+    ssc = stash --include-untracked -m 
+  #stash all changes, including untracked and ignored files
+    ssa = stash --all
+  #stash all changes on tracked files, from the top of the work tree
+    ssr = stash --keep-index
+  #stash interactively (since HEAD)
+    ssi = stash --patch
   #stash a single file; use -m for a comment
     ssf = stash push
   #drop the [last item] in stash
@@ -372,18 +382,14 @@
     ssdri = "!f(){ git stash drop stash@{$1} ; };f"
   #drop all stashes for this repo
     ssdrall = stash clear
+  #visually select a stash to drop (requires fzf: https://github.com/junegunn/fzf)
+    ssdrs = "!f() { git stash list | fzf | grep -Eio '^stash@{\\d+' | cut -c 8- | xargs git stash drop ; };f"    
   #create a new branch out of stash (branchname required, stash number optional - uses last if not defined)
     ssbr = stash branch
-  #stash all changes on tracked files, from the top of the work tree
-    ssr = stash --keep-index
-  #stash all changes, including untracked files
-    ssu = stash --include-untracked
-  #stash all changes, including untracked and ignored files
-    ssa = stash --all
-  #stash interactively (since HEAD)
-    ssi = stash --patch
-  #apply and remove the given (or latest) stash state
+  #apply and remove the given index (or latest, if not specified) stash state
     ssp = stash pop
+  #visually select a stash to apply and remove (requires fzf: https://github.com/junegunn/fzf)
+    ssps = "!f() { git stash list | fzf | grep -Eio '^stash@{\\d+' | cut -c 8- | xargs git stash pop ; };f"    
   #list stashes
     ssl = stash list
   #display stash contents

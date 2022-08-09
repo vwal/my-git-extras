@@ -79,7 +79,7 @@
   #ABBR: cherry-pick
     cpick = cherry-pick
 
-  #switch back to the most recent branch
+  #switch to the most recent previous branch (toggles between the latest two branches)
     sw = checkout -
 
   #ABBR: checkout

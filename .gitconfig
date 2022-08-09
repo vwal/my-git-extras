@@ -310,15 +310,14 @@
   #as above, but with patches
     rupp = remote-updates -p
 
-  #show local commits not yet pushed to the remote (synonmous to outlog?)
-  #  unpushed = !LB=$(git rev-parse --abbrev-ref HEAD) && RB=$(git show-remote-branch) && git lf "\"$RB\"".."\"$LB\""
-
   #show changes to upstream
     statup = !git remote update -p && git diff --stat @{u}
 
   #show diff from local to upstream (not yet pushed)
     outlog = !git lf @{u}..
-  #show diff from upstream to local (not yet merged)
+  #alias to outlog
+    unpushed = outlog
+  #show diff from upstream to local (not yet merged/rebased)
     inlog = !git remote update -p && git lf ..@{u}
 
   #simulate push
@@ -331,13 +330,13 @@
   #whatchanged with patches
     wchp = whatchanged -p
 
-  #whatchanged in the remote of this branch
+  #whatchanged in the remote of this branch (my-git-extras/scripts/git-show-remote-branch)
     remch = !RE=$(git show-remote-branch) && git remote update -p && git whatchanged "\"$RE\""
-  #whatchanged in the remote of this branch (show patches)
+  #whatchanged in the remote of this branch (show patches) (my-git-extras/scripts/git-show-remote-branch)
     remchp = !RE=$(git show-remote-branch) && git remote update -p && git whatchanged -p "\"$RE\""
-  #remote log
+  #remote log (my-git-extras/scripts/git-show-remote-branch)
     reml = !RE=$(git show-remote-branch) && git remote update -p && git lf "\"$RE\""
-  #remote log with patches
+  #remote log with patches (my-git-extras/scripts/git-show-remote-branch)
     remlp = !RE=$(git show-remote-branch) && git remote update -p && git lf -p "\"$RE\""
 
   #ABBR: merge
@@ -540,11 +539,13 @@
     dfi = diff --word-diff
   #show changes to the HEAD (staged and unstaged but not untracked)
     dfhd = diff HEAD
+  #show changes to the current remote (origin) or ghit sbranch (staged and unstaged but not untracked)
+    dfhdr = "!f() { REMBR=$(git rev-parse --symbolic-full-name --abbrev-ref @{upstream}) && REMBRnoS=$(printf $REMBR | sed 's!/! !') && echo $REMBRnoS && git fetch $REMBRnoS ; git diff $REMBR ; }; f"
   #show changes in HEAD (to the previous commit)
     lastcm = diff "HEAD^" HEAD
-  # show changes to a specific file in HEAD (to the previous commit); requires fzf: https://github.com/junegunn/fzf
+  #show changes to a specific file in HEAD (to the previous commit); requires fzf: https://github.com/junegunn/fzf
     lastcmf = "!f() { git diff --name-only HEAD HEAD^ | fzf | xargs git -p diff HEAD HEAD^ ; };f"
-  # show changes to a specific file in HEAD (to the previous commit) in visual diff tool; requires fzf: https://github.com/junegunn/fzf
+  #show changes to a specific file in HEAD (to the previous commit) in visual diff tool; requires fzf: https://github.com/junegunn/fzf
     lastcmfv = "!f() { git diff --name-only HEAD HEAD^ | fzf | xargs git difftool HEAD HEAD^ ; };f"
   #show diff for staged (cached); show diff between HEAD and stage
     dfstaged = diff --staged

@@ -73,11 +73,14 @@
     cls = clone --recurse-submodules
   #clone a repository as a mirror
     mirror = clone --mirror
-  # clone a repository as a bare repo
+  #clone a repository as a bare repo
     bare = clone --bare
 
   #ABBR: cherry-pick
     cpick = cherry-pick
+
+  #switch back to the most recent branch
+    sw = checkout -
 
   #ABBR: checkout
     co = checkout
@@ -219,8 +222,8 @@
   #see: http://blog.yuriy.tymch.uk/2012/05/different-git-push-pullfetch-urls.html for more detail
     forkrem = remote set-url --push
 
-  # update a branch (also without checkout): e.g. git update somebranch (on or off 'somebranch')
-  # update a branch from upstream remote: git update somebranch upstream
+  #update a branch (also without checkout): e.g. git update somebranch (on or off 'somebranch')
+  #update a branch from upstream remote: git update somebranch upstream
   update = "!fn() { \
     repo=${2:-origin}; \
     if [[ $(git rev-parse --abbrev-ref HEAD) = \"$1\" ]]; \

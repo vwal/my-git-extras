@@ -492,8 +492,10 @@
     lnap = log --patch
   #abbreviated (short) commit list
     lns = log --graph --decorate --pretty=oneline --abbrev-commit
-  #list my commits
+  #list my commits; relative dates
     listmy = !UN=$(git config user.name) && git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --author="\"$UN\"" 
+  #list my commits; full hash & full datetime
+    listmydt = !AUTHEMAIL=$(git config user.email) && git log --author="$AUTHEMAIL"
   #show my commits (number of commits to show as a param)
     showmy = !UN=$(git config user.name) && git show --author="\"$UN\"" -n
   #show files and their statuses in each commit

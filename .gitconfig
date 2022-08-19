@@ -546,6 +546,8 @@
     dfhd = diff HEAD
   #show changes to the current remote (origin) or ghit sbranch (staged and unstaged but not untracked)
     dfhdr = "!f() { REMBR=$(git rev-parse --symbolic-full-name --abbrev-ref @{upstream}) && REMBRnoS=$(printf $REMBR | sed 's!/! !') && echo $REMBRnoS && git fetch $REMBRnoS ; git diff $REMBR ; }; f"
+  #list changes in HEAD (to the previous commit)
+    llastcm = diff --name-only "HEAD^" HEAD
   #show changes in HEAD (to the previous commit)
     lastcm = diff "HEAD^" HEAD
   #show changes to a specific file in HEAD (to the previous commit); requires fzf: https://github.com/junegunn/fzf

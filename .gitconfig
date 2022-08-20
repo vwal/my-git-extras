@@ -551,9 +551,9 @@
   #show changes in HEAD (to the previous commit)
     lastcm = diff "HEAD^" HEAD
   #show changes to a specific file in HEAD (to the previous commit); requires fzf: https://github.com/junegunn/fzf
-    lastcmf = "!f() { git diff --name-only HEAD HEAD^ | fzf | xargs git -p diff HEAD HEAD^ ; };f"
+    lastcmf = "!f() { git diff --name-only HEAD^ HEAD | fzf | xargs git -p diff HEAD^ HEAD ; };f"
   #show changes to a specific file in HEAD (to the previous commit) in visual diff tool; requires fzf: https://github.com/junegunn/fzf
-    lastcmfv = "!f() { git diff --name-only HEAD HEAD^ | fzf | xargs git difftool HEAD HEAD^ ; };f"
+    lastcmfv = "!f() { git diff --name-only HEAD^ HEAD | fzf | xargs git difftool HEAD^ HEAD ; };f"
   #show diff for staged (cached); show diff between HEAD and stage
     dfstaged = diff --staged
   #list file names in stage
@@ -658,6 +658,7 @@
   prompt = false
 [difftool "bc4"]
   trustexitcode = true
+  # requires "Install Command Line Tools" in bc4
   cmd = /usr/local/bin/bcomp \"$LOCAL\" \"$REMOTE\"
 [difftool "vim"]
   trustexitcode = true
@@ -675,7 +676,8 @@
   keepBackup = false
 [mergetool "bc4"]
   trustexitcode = true
-  cmd = /usr/local/bin/bcompare \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+  # requires "Install Command Line Tools" in bc4
+  cmd = /usr/local/bin/bcomp \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 [mergetool "vim"]
   trustexitcode = true
   cmd = vimdiff \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"

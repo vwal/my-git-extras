@@ -570,12 +570,12 @@
     lfc = "!f() { FILENM=$(git --no-pager ls-files --full-name $1) && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git diff $SHA $SHA^ $FILENM ; git --no-pager show -s $SHA ; }; f"
   #show last changes to a selected file; requires fzf: https://github.com/junegunn/fzf
     lfcsel = "!f() { FILENM=$(git --no-pager ls-files | fzf ) && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git --no-pager diff $SHA $SHA^ $FILENM ; git --no-pager show -s $SHA ; }; f"
-  #show HEAD offset
-    shead = "!f() { git show HEAD@{$1}; }; f"
+  #show HEAD offset from a given commit; arg: a commit hash
+    shead = "!f() { git show HEAD@{$1} ; }; f"
   #show changes in a specific commit; NOTE: http://stackoverflow.com/a/25395673/134536; NOTE: can also use 'show'
-    cdiff = "!f() { git diff $1^!; }; f"
+    cdiff = "!f() { git diff $1^! ; }; f"
   #show commit log between two given commits
-    logbtwn = "!f() { git log --pretty=format:'* %s' $1..$2; }; f"
+    logbtwn = "!f() { git log --pretty=format:'* %s' $1..$2 ; }; f"
   #show changes in a given commit (SHA)
     diffin = log -n1 --format=fuller -p
   #show changes between two given commits (SHAs)

@@ -102,7 +102,7 @@
   #EXT (my-git-extras/scripts/git-checkout-all): track all available branches from the origin
     ca = checkout-all
   #make an orphan branch (no parents, no history)
-    orphan = "!f() { git checkout --orphan $1 && git rm -rf "."; }; f"
+    orphan = "!f() { git checkout --orphan $1 && git rm -rf "." ; }; f"
   #ABBR: branch
     br = branch
   #show current branch name
@@ -120,7 +120,7 @@
   #substitute branch with another, and archive old with a datetime stamp
     subst = "!f() { DT=`date +%Y-%m-%d_%H%M` && git branch -m $1 ${1}-${DT} && git branch -m $2 $1 ; }; f"
   #add 'done-' label to branch name (rename)
-    done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
+    done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{} ; }; f"
   #drop (delete) a branch irrespecive of its merge status (be careful!)
     dropbr = branch -D
   #drop (delete) all but master/main and the current branch (be careful!)
@@ -128,17 +128,17 @@
   #delete selected branches (requires fzf: https://github.com/junegunn/fzf)
     delbrs = "!f() { git branch | grep -v '\\*' | grep -v 'master' | grep -v 'main' | fzf --multi | xargs git branch --delete --force ; }; f"
   #drop (delete) remote branch; args: repo, branch; e.g. droprembr origin somebranch
-    droprembr = "!f() { git push $1 --delete $2; }; f"
+    droprembr = "!f() { git push $1 --delete $2 ; }; f"
   #show local and remote branches a commit (SHA) occurs in
     c2b = branch -a --contains
   #find commits by Author (partial match is ok)
-    author = "!f() { git log --all --author=$1; }; f"
+    author = "!f() { git log --all --author=$1 ; }; f"
   #EXT (my-git-extras/scripts/git-amend-author): amend author of a specific commit SHA (see more comments in the script)
     ama = amend-author
   #change the author and the committer of the *most recent commit* (args: name (use quotes if name contains spaces), email);
   #to change author deeper into the commits, see: http://stackoverflow.com/questions/750172/change-the-author-of-a-commit-in-git
   #or http://stackoverflow.com/a/28845565/134536
-    chlastauth = "!f() { git -c user.name=\"$1\" -c user.email=\"$2\" commit --amend --reset-author --no-edit; }; f"
+    chlastauth = "!f() { git -c user.name=\"$1\" -c user.email=\"$2\" commit --amend --reset-author --no-edit ; }; f"
 
   #check out a remote branch with its name as-is and start tracking it: [remote]/[remotebranchname]
     coasis = checkout --track
@@ -184,7 +184,7 @@
   #log "blame"; requires a ref as a param
     lb = log -p -M --follow --stat --
   #display last commit date/committer for each local or tracked remote branch
-    llb = "!f(){ git status -sb;git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)  (%(authorname))'; };f"
+    llb = "!f(){ git status -sb;git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)  (%(authorname))' ; };f"
   #display the last commit for the given branch (or current if not given)
     llv = branch -lvv
 
@@ -194,7 +194,7 @@
   #case-insensitive grep working tree for regexp (no binary file search)
     ggi = grep -iI
   #grep working tree for regexp from the top level (no binary file search)
-    gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
+    gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A ; }; f"
   #grep working tree; display filenames only for matches (no binary file search)
     ggno = grep -I --name-only
   #search logs for commit comments containing the given pattern
@@ -204,7 +204,7 @@
   #locate a file in the codebase (req filename)
     ff = !git ls-files | grep -i
   #find string in code history (not in commit comments)
-    grepcode = "!f() { git rev-list --all | xargs git grep $1; }; f"
+    grepcode = "!f() { git rev-list --all | xargs git grep $1 ; }; f"
 
   ###see more git grep examples: http://stackoverflow.com/a/2929502/134536
 
@@ -371,7 +371,7 @@
   #stash tracked and untracked; arg: comment
     ssc = stash --include-untracked -m 
   #stash all changes, including untracked and ignored files
-    ssa = stash --all
+    ssall = stash --all
   #stash all changes on tracked files, from the top of the work tree
     ssr = stash --keep-index
   #stash interactively (since HEAD)
@@ -395,7 +395,9 @@
   #list stashes
     ssl = stash list
   #display stash contents
-    ssls = stash show -p
+    sssh = stash show -p
+  #show contents of a visually select a stash (requires fzf: https://github.com/junegunn/fzf)
+    ssshv = "!f() { git stash list | fzf | grep -Eio '^stash@{\\d+' | cut -c 8- | xargs git stash show -p ; };f"    
 
   #ABBR: add
     a = add
@@ -544,9 +546,9 @@
     dfi = diff --word-diff
   #show staged/unstaged changes to a visually selected file; requires fzf: https://github.com/junegunn/fzf
     dfv = "!f() { git status -s | fzf | awk -F ' ' '{print $2}' | xargs git diff HEAD ; }; f"
-  #show changes to the HEAD (staged and unstaged but not untracked)
+  #show staged/unstaged changes to the HEAD (staged and unstaged but not untracked)
     dfhd = diff HEAD
-  #show changes to the current remote (origin) or ghit sbranch (staged and unstaged but not untracked)
+  #show changes to the current remote (origin) on this branch (staged and unstaged but not untracked)
     dfhdr = "!f() { REMBR=$(git rev-parse --symbolic-full-name --abbrev-ref @{upstream}) && REMBRnoS=$(printf $REMBR | sed 's!/! !') && echo $REMBRnoS && git fetch $REMBRnoS ; git diff $REMBR ; }; f"
   #list changes in HEAD (to the previous commit)
     llastcm = diff --name-only "HEAD^" HEAD

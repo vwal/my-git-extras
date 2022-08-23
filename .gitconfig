@@ -364,7 +364,7 @@
     purrd = pull --ff --ff-only --rebase --autostash --stat
 
   #ABBR: stash (no args: tracked only)
-    st = stash
+    sta = stash
 
   #common stash: stash all tracked and untracked; use -m for a comment
     ss = stash --include-untracked
@@ -542,6 +542,8 @@
     df = diff
   #inline diff
     dfi = diff --word-diff
+  #show staged/unstaged changes to a visually selected file; requires fzf: https://github.com/junegunn/fzf
+    dfv = "!f() { git status -s | fzf | awk -F ' ' '{print $2}' | xargs git diff HEAD ; }; f"
   #show changes to the HEAD (staged and unstaged but not untracked)
     dfhd = diff HEAD
   #show changes to the current remote (origin) or ghit sbranch (staged and unstaged but not untracked)
@@ -566,9 +568,9 @@
 
   #show filenames affected by a given commit
     cfiles = show --name-status
-  #show last changes to a specified file
+  #show last committed changes to a specified file
     lfc = "!f() { FILENM=$(git --no-pager ls-files --full-name $1) && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git diff $SHA $SHA^ $FILENM ; git --no-pager show -s $SHA ; }; f"
-  #show last changes to a selected file; requires fzf: https://github.com/junegunn/fzf
+  #show last committed changes to a selected file; requires fzf: https://github.com/junegunn/fzf
     lfcsel = "!f() { FILENM=$(git --no-pager ls-files | fzf ) && SHA=$(git log -n 1 --pretty=format:%H -- $FILENM) && git --no-pager diff $SHA $SHA^ $FILENM ; git --no-pager show -s $SHA ; }; f"
   #show HEAD offset from a given commit; arg: a commit hash
     shead = "!f() { git show HEAD@{$1} ; }; f"

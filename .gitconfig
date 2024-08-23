@@ -45,6 +45,8 @@
     tbd = "!f() { git for-each-ref --format='%(*creatordate:raw)%(creatordate:raw) %(creatordate:short) %(refname) %(*objectname) %(objectname)' refs/tags | sort -n | awk '{ print $3, $5, $4 }' ; }; f"
   #list tags with their descriptions
     tagdesc = tag -n25
+  #show tag's commit SHA (arg: tag name)
+    tagcm = rev-list -n 1
   #show last tag name and annotation
     lasttag = describe --tags --abbrev=0
     lt = describe --tags --abbrev=0
@@ -107,13 +109,15 @@
     br = branch
   #show current branch name
     whereami = branch --show-current
+  #show a branch's HEAD SHA (arg: branch name)
+    brhead = rev-parse --verify  
   #display branches without pagination
     brs = "!f() { git --no-pager branch ; }; f"
   #display the current branch name (including detached head, orphan)
   #TODO: resolve SHA to branch(es) (as in 'c2b', such as with a detached head)
   #See: http://stackoverflow.com/questions/2706797/finding-what-branch-a-git-commit-came-from
     brr = "!f() { git status -b | head -n1 | cut -d' ' -f3- ; }; f"
-  #rename branch
+  #rename branch; req: <oldname> <newname>
     renbr = branch -m
   #swap branches
     swap =  "!f() { git branch -m $1 ${1}.TMPTMPTMP && git branch -m $2 $1  && git branch -m ${1}.TMPTMPTMP $2 && git checkout $1 ; }; f"
@@ -468,7 +472,11 @@
     nii = ls-files --others --exclude-standard
   #EXT (my-git-extras/scripts/git-show-ignored): show all ignored, whether assume-unchanged, exclude-standard, or .gitgnore
     si = show-ignored
-
+  #why ignored? arg: path/to/a/file
+    wi = check-ignore -v
+  #all ignored in the current dir/recursive
+    ignored = check-ignore -v *
+  
   #ABBR: show
     sh = show
 
@@ -590,8 +598,8 @@
 
   #find commits for a given file (req: filename)
     ffile = log -- 
-  #restore a file from an old commit (req SHA ($1), filename ($2))
-    rfile = "!f() { git checkout $1 -- $2 ; }; f"
+  #restore a file (first param) from HEAD (default) or a specific SHA (optional second param)
+    restorefile = "!f() { git checkout ${2:-HEAD} -- \"$1\"; }; f"
 
   #EXT (my-git-extras/scripts/git-wipe-file): wipe a single file
     wipefile = wipe-file
@@ -650,7 +658,7 @@
   legacyheaders = false
   whitespace = -trailing-space
   excludesfile = ~/.gitignore
-  editor = nvim
+  editor = vim
 [credential]
   helper = cache --timeout 3600
 [format]

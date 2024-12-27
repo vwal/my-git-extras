@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# git-pickrebase
+
+# Get commits between current branch and specified branch (or master/main)
+TARGET_BRANCH=${1:-main}
+current_branch=$(git branch --show-current)
+
+echo "Selecting commits from $current_branch to rebase onto $TARGET_BRANCH"
+
+# Get list of commits with their messages
+commits=$(git log --oneline "$TARGET_BRANCH..$current_branch" --reverse)
+
+if [ -z "$commits" ]; then
+    echo "No commits found between $TARGET_BRANCH and $current_branch"
+    exit 1
+fi
+
+# Use fzf to select commits
+selected_commits=$(echo "$commits" | fzf --multi \
+    --header "Select commits to rebase (TAB to select multiple)" \
+    --preview "git show --color=always {1}" \
+    --preview-window=right:60%)
+
+if [ -n "$selected_commits" ]; then
+    # Extract commit hashes
+    commit_hashes=$(echo "$selected_commits" | cut -d' ' -f1)
+    
+    # Create a temporary file for the rebase todo list
+    todo_file=$(mktemp)
+    
+    # Start with an exec command to checkout target branch
+    echo "exec git checkout $TARGET_BRANCH" > "$todo_file"
+    
+    # Add pick commands for each selected commit
+    echo "$commit_hashes" | while read hash; do
+        echo "pick $hash" >> "$todo_file"
+    done
+    
+    # Start interactive rebase
+    GIT_SEQUENCE_EDITOR="cat $todo_file >" git rebase -i "$TARGET_BRANCH"
+    
+    # Cleanup
+    rm "$todo_file"
+else
+    echo "No commits selected"
+    exit 0
+fi

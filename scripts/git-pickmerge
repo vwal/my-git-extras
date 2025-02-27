@@ -7,6 +7,12 @@ SOURCE_BRANCH=${1:-HEAD}
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
+# Find the Git repository root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+# Change to the repository root
+cd "$REPO_ROOT" || { echo "Failed to change directory to repository root"; exit 1; }
+
 # Get the list of files that differ in source branch compared to current branch
 # Using three dots (...) to show only changes in SOURCE_BRANCH
 diff_files=$(git diff --name-only $CURRENT_BRANCH...$SOURCE_BRANCH)
@@ -27,4 +33,3 @@ if [ -n "$selected_files" ]; then
     echo -e "\nFiles have been staged. Review changes with 'git status' or 'git diff --staged'"
     echo "Commit when ready with: git commit -m 'your message'"
 fi
-

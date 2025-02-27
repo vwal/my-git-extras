@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Determine the source branch (default to HEAD if not specified)
@@ -14,7 +13,6 @@ REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "$REPO_ROOT" || { echo "Failed to change directory to repository root"; exit 1; }
 
 # Get the list of files that differ in source branch compared to current branch
-# Using three dots (...) to show only changes in SOURCE_BRANCH
 diff_files=$(git diff --name-only $CURRENT_BRANCH...$SOURCE_BRANCH)
 
 # Use fzf to select files
@@ -23,13 +21,89 @@ selected_files=$(echo "$diff_files" | fzf --multi --preview "git diff $SOURCE_BR
 if [ -n "$selected_files" ]; then
     echo "Selected files:"
     echo "$selected_files"
-    echo -e "\nChecking out selected files from $SOURCE_BRANCH..."
-
-    # Checkout each selected file
-    echo "$selected_files" | while read file; do
-        git checkout $SOURCE_BRANCH -- "$file"
-    done
-
+    
+    # Find common ancestor commit
+    merge_base=$(git merge-base $CURRENT_BRANCH $SOURCE_BRANCH)
+    
+    # Initialize arrays for files with and without conflicts
+    declare -a files_with_local_changes
+    declare -a files_without_local_changes
+    
+    # Check each selected file for local changes
+    while IFS= read -r file; do
+        if git diff --quiet $merge_base $CURRENT_BRANCH -- "$file" 2>/dev/null; then
+            # No local changes
+            files_without_local_changes+=("$file")
+        else
+            # Has local changes
+            files_with_local_changes+=("$file")
+        fi
+    done <<< "$selected_files"
+    
+    # If there are files with local changes, prompt for strategy
+    if [ ${#files_with_local_changes[@]} -gt 0 ]; then
+        echo -e "\nThe following files have local changes:"
+        printf '%s\n' "${files_with_local_changes[@]}"
+        
+        echo -e "\nChoose merge strategy:"
+        echo "1) force (override local changes)"
+        echo "2) merge (try to reconcile changes)"
+        read -p "Enter choice [1/2]: " strategy
+        
+        case $strategy in
+            1)
+                echo -e "\nUsing force strategy..."
+                for file in "${files_with_local_changes[@]}"; do
+                    git reset HEAD "$file"
+                    git checkout -f $SOURCE_BRANCH -- "$file"
+                    git add "$file"
+                done
+                ;;
+            2)
+                echo -e "\nUsing merge strategy..."
+                for file in "${files_with_local_changes[@]}"; do
+                    # Create temporary files for the three versions
+                    base_tmp=$(mktemp)
+                    ours_tmp=$(mktemp)
+                    theirs_tmp=$(mktemp)
+                    
+                    # Get the three versions of the file
+                    git show "$merge_base:$file" > "$base_tmp" 2>/dev/null || true
+                    git show "$CURRENT_BRANCH:$file" > "$ours_tmp"
+                    git show "$SOURCE_BRANCH:$file" > "$theirs_tmp"
+                    
+                    # Perform the three-way merge
+                    git merge-file "$ours_tmp" "$base_tmp" "$theirs_tmp"
+                    
+                    # Copy the merged result back
+                    cp "$ours_tmp" "$file"
+                    
+                    # Clean up temporary files
+                    rm "$base_tmp" "$ours_tmp" "$theirs_tmp"
+                    
+                    # Stage the merged file
+                    git add "$file"
+                done
+                ;;
+            *)
+                echo "Invalid choice. Aborting."
+                exit 1
+                ;;
+        esac
+    fi
+    
+    # Process files without local changes
+    if [ ${#files_without_local_changes[@]} -gt 0 ]; then
+        echo -e "\nProcessing files without local changes:"
+        printf '%s\n' "${files_without_local_changes[@]}"
+        for file in "${files_without_local_changes[@]}"; do
+            git checkout $SOURCE_BRANCH -- "$file"
+        done
+    fi
+    
+    echo -e "\nStatus of changed files:"
+    git status --short
+    
     echo -e "\nFiles have been staged. Review changes with 'git status' or 'git diff --staged'"
     echo "Commit when ready with: git commit -m 'your message'"
 fi

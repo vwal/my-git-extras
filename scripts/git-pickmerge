@@ -15,8 +15,11 @@ cd "$REPO_ROOT" || { echo "Failed to change directory to repository root"; exit 
 # Get the list of files that differ in source branch compared to current branch
 diff_files=$(git diff --name-only $CURRENT_BRANCH...$SOURCE_BRANCH)
 
-# Use fzf to select files
-selected_files=$(echo "$diff_files" | fzf --multi --preview "git diff $SOURCE_BRANCH -- {}")
+# Use fzf to select and preview files
+# requires `git-delta` (available on homebrew, apt, dnf, pacman, cargo, etc)
+selected_files=$(echo "$diff_files" | fzf --multi --preview "git diff $CURRENT_BRANCH $SOURCE_BRANCH -- {} | delta")
+# Use the alternative below if you don't have access to 'delta', or just want a conventional diff
+#selected_files=$(echo "$diff_files" | fzf --multi --preview "git diff --color=always --word-diff $CURRENT_BRANCH $SOURCE_BRANCH -- {}")
 
 if [ -n "$selected_files" ]; then
     echo "Selected files:"

@@ -348,6 +348,8 @@
 
   #ABBR: merge
     mg = merge
+  #ABBR: squash merge
+    mgs = merge --squash
   #abort merge
     mga = merge --abort
   #merge master/main to the current branch (updates master first; this requires git 2.20 or newer because of the nested alias 'update')

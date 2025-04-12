@@ -20,7 +20,10 @@ fi
 # Use fzf to select commits
 selected_commits=$(echo "$commits" | fzf --multi \
     --header "Select commits to rebase (TAB to select multiple)" \
-    --preview "git show --color=always {1}" \
+    # requires `git-delta` (available on homebrew, apt, dnf, pacman, cargo, etc)
+    --preview "git show {1} | delta" \
+    # Use the alternative below if you don't have access to 'delta', or just want a conventional diff
+    # --preview "git show --color=always {1}" \
     --preview-window=right:60%)
 
 if [ -n "$selected_commits" ]; then

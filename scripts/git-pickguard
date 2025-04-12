@@ -1,0 +1,80 @@
+#!/bin/bash
+
+set -euo pipefail
+
+ACTION=${1:-}
+SOURCE_BRANCH=${2:-}
+REPO_ROOT=$(git rev-parse --show-toplevel)
+HOOK_PATH="$REPO_ROOT/.git/hooks/pre-push"
+NO_PUSH_FILE="$REPO_ROOT/.git/NO_PUSH"
+
+BLOCK_CHECK_LINE='if [ -f .git/NO_PUSH ]; then'
+
+REQUIRED_BLOCK=$(cat <<'EOF'
+# ---- Custom push-blocker ----
+if [ -f .git/NO_PUSH ]; then
+  echo "⛔️ Push blocked: Temporary 'NO_PUSH' flag is active."
+  echo "This is likely due to a temporary 'git merge -s ours' situation."
+  echo "Run 'rm .git/NO_PUSH' after cleaning up the '-s ours' flag."
+  exit 1
+fi
+EOF
+)
+
+# --- Usage guard ---
+if [[ "$ACTION" != "enable" && "$ACTION" != "disable" ]]; then
+  echo "Usage: git pickguard enable <source-branch> | disable"
+  exit 1
+fi
+
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# --- Enable guard ---
+if [[ "$ACTION" == "enable" ]]; then
+  if [[ -z "$SOURCE_BRANCH" ]]; then
+    echo "❌ You must specify a source branch to mark as merged."
+    exit 1
+  fi
+
+  if ! git show-ref --verify --quiet refs/heads/"$SOURCE_BRANCH"; then
+    echo "❌ Source branch '$SOURCE_BRANCH' does not exist locally."
+    exit 1
+  fi
+
+  # Validate pre-push hook
+  if [[ ! -f "$HOOK_PATH" ]]; then
+    echo "❌ Missing required Git hook at: $HOOK_PATH"
+    echo "Please create it with the following content:"
+    echo ""
+    echo "$REQUIRED_BLOCK"
+    exit 1
+  fi
+
+  if ! grep -Fq "$BLOCK_CHECK_LINE" "$HOOK_PATH"; then
+    echo "❌ Git hook found but missing push-block check!"
+    echo "Please add the following block to the top of $HOOK_PATH:"
+    echo ""
+    echo "$REQUIRED_BLOCK"
+    exit 1
+  fi
+
+  echo "🔒 Blocking pushes (creating $NO_PUSH_FILE)"
+  touch "$NO_PUSH_FILE"
+
+  echo "⚠️  Performing temporary 'ours' merge of '$SOURCE_BRANCH' into '$CURRENT_BRANCH'"
+  git merge --no-ff -s ours "$SOURCE_BRANCH" -m "Temporarily marking $SOURCE_BRANCH as merged (after squash merge)"
+
+  echo "✅ Guard enabled: Push blocked and '$SOURCE_BRANCH' marked as merged."
+  echo "💡 Disable it with: git pickguard disable"
+
+# --- Disable guard ---
+elif [[ "$ACTION" == "disable" ]]; then
+  echo "🔓 Removing push block ($NO_PUSH_FILE)"
+  rm -f "$NO_PUSH_FILE"
+
+  echo "↩️  Reverting temporary merge commit"
+  git reset --hard HEAD~1
+
+  echo "✅ Guard disabled. Repository restored to previous state."
+fi
+

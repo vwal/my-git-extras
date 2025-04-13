@@ -32,18 +32,18 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 # --- Enable guard ---
 if [[ "$ACTION" == "enable" ]]; then
   if [[ -z "$SOURCE_BRANCH" ]]; then
-    echo "❌ You must specify a source branch to mark as merged."
+    echo "‼️ You must specify a source branch to mark as merged."
     exit 1
   fi
 
   if ! git show-ref --verify --quiet refs/heads/"$SOURCE_BRANCH"; then
-    echo "❌ Source branch '$SOURCE_BRANCH' does not exist locally."
+    echo "‼️ Source branch '$SOURCE_BRANCH' does not exist locally."
     exit 1
   fi
 
   # Validate pre-push hook
   if [[ ! -f "$HOOK_PATH" ]]; then
-    echo "❌ Missing required Git hook at: $HOOK_PATH"
+    echo "‼️ Missing required Git hook at: $HOOK_PATH"
     echo "Please create it with the following content:"
     echo ""
     echo "$REQUIRED_BLOCK"
@@ -51,7 +51,7 @@ if [[ "$ACTION" == "enable" ]]; then
   fi
 
   if ! grep -Fq "$BLOCK_CHECK_LINE" "$HOOK_PATH"; then
-    echo "❌ Git hook found but missing push-block check!"
+    echo "‼️ Git hook found but missing push-block check!"
     echo "Please add the following block to the top of $HOOK_PATH:"
     echo ""
     echo "$REQUIRED_BLOCK"

@@ -391,7 +391,7 @@
   #drop all stashes for this repo
     ssdrall = stash clear
   #visually select a stash to drop (requires fzf: https://github.com/junegunn/fzf)
-    ssdrs = "!f() { git stash list | fzf | grep -Eio '^stash@{\\d+' | cut -c 8- | xargs git stash drop ; };f"    
+    dropss = drop-stash
   #create a new branch out of stash (branchname required, stash number optional - uses last if not defined)
     ssbr = stash branch
   #apply and remove the given index (or latest, if not specified) stash state

@@ -1,0 +1,31 @@
+#!/bin/bash
+set -euo pipefail
+exec </dev/tty
+
+# Show fzf with preview and full stash line
+selected=$(git stash list | fzf --multi \
+  --preview='git stash show -p $(echo {} | grep -Eo "stash@\{[0-9]+\}" | head -n1)')
+
+if [[ -z "$selected" ]]; then
+  echo "No stashes selected. Aborting."
+  exit 0
+fi
+
+echo ""
+echo "‼️  The following stashes will be dropped:"
+echo "$selected"
+echo ""
+
+read -r -p "Are you sure you want to drop these stashes? [y/N] " confirm </dev/tty
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Aborted."
+  exit 0
+fi
+
+# Extract only the stash refs and drop them
+echo "$selected" | grep -Eo 'stash@\{[0-9]+\}' | while read -r stash_ref; do
+  echo "🗑️  Dropping $stash_ref..."
+  git stash drop "$stash_ref"
+done
+
+echo "✅ Done."

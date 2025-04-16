@@ -6,17 +6,19 @@ ACTION=${1:-}
 SOURCE_BRANCH=${2:-}
 REPO_ROOT=$(git rev-parse --show-toplevel)
 HOOK_PATH="$REPO_ROOT/.git/hooks/pre-push"
-NO_PUSH_FILE="$REPO_ROOT/.git/NO_PUSH"
-
-BLOCK_CHECK_LINE='if [ -f .git/NO_PUSH ]; then'
+LOCK_FILE="$REPO_ROOT/.git/pickguard.lock"
 
 REQUIRED_BLOCK=$(cat <<'EOF'
 # ---- Custom push-blocker ----
-if [ -f .git/NO_PUSH ]; then
-  echo "⛔️ Push blocked: Temporary 'NO_PUSH' flag is active."
-  echo "This is likely due to a temporary 'git merge -s ours' situation."
-  echo "Run 'rm .git/NO_PUSH' after cleaning up the '-s ours' flag."
-  exit 1
+LOCK_FILE=$(git rev-parse --show-toplevel)/.git/pickguard.lock
+if [ -f "$LOCK_FILE" ]; then
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  lock_branch=$(grep '^branch:' "$LOCK_FILE" | awk '{print $2}')
+  if [ "$current_branch" = "$lock_branch" ]; then
+    echo "⛔️ Push blocked: Pickguard is active on branch '$current_branch'."
+    echo "Run 'git pickguard disable' after completing your pickmerge."
+    exit 1
+  fi
 fi
 EOF
 )
@@ -50,31 +52,33 @@ if [[ "$ACTION" == "enable" ]]; then
     exit 1
   fi
 
-  if ! grep -Fq "$BLOCK_CHECK_LINE" "$HOOK_PATH"; then
-    echo "‼️ Git hook found but missing push-block check!"
+  if ! grep -q "LOCK_FILE=" "$HOOK_PATH"; then
+    echo "‼️ Git hook found but missing pickguard branch check."
     echo "Please add the following block to the top of $HOOK_PATH:"
     echo ""
     echo "$REQUIRED_BLOCK"
     exit 1
   fi
 
-  echo "🔒 Blocking pushes (creating $NO_PUSH_FILE)"
-  touch "$NO_PUSH_FILE"
+  echo "🔒 Creating branch-specific lock file: $LOCK_FILE"
+  {
+    echo "branch: $CURRENT_BRANCH"
+    echo "source: $SOURCE_BRANCH"
+  } > "$LOCK_FILE"
 
   echo "⚠️  Performing temporary 'ours' merge of '$SOURCE_BRANCH' into '$CURRENT_BRANCH'"
   git merge --no-ff -s ours "$SOURCE_BRANCH" -m "Temporarily marking $SOURCE_BRANCH as merged (after squash merge)"
 
-  echo "✅ Guard enabled: Push blocked and '$SOURCE_BRANCH' marked as merged."
-  echo "💡 Disable it with: git pickguard disable"
+  echo "✅ Guard enabled for '$CURRENT_BRANCH'. Push is blocked until disabled."
+  echo "💡 Run: git pickguard disable"
 
 # --- Disable guard ---
 elif [[ "$ACTION" == "disable" ]]; then
-  echo "🔓 Removing push block ($NO_PUSH_FILE)"
-  rm -f "$NO_PUSH_FILE"
+  echo "🔓 Removing push block: $LOCK_FILE"
+  rm -f "$LOCK_FILE"
 
   echo "↩️  Reverting temporary merge commit"
   git reset --hard HEAD~1
 
-  echo "✅ Guard disabled. Repository restored to previous state."
+  echo "✅ Guard disabled for '$CURRENT_BRANCH'. Repository restored to previous state."
 fi
-

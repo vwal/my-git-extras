@@ -168,6 +168,17 @@
   #set remote upstream for an existing local branch using 'origin' and a new branch name (req [new remote branch name])
     setremorn = "!f() { git branch --set-upstream-to=origin/$1 ; }; f"
 
+  #edit the sparse-checkout file for the current worktree
+    sparsee = "!f() { ${EDITOR:-vim} \"$(git rev-parse --git-dir)/info/sparse-checkout\"; }; f"
+  #reapply the sparse-checkout in the current worktree
+    sparsea = "!git read-tree -mu HEAD"
+  #list the current inclusion/exclusion patterns
+    sparsel = "!cat \"$(git rev-parse --git-dir)/info/sparse-checkout\""
+  #list active worktrees
+    wtl = worktree list
+  #list worktrees for the current branch only
+      wtb = "!f() { b=$(git rev-parse --abbrev-ref HEAD); git worktree list | grep \"\\[$b\\]\"; }; f"
+
   #EXT (my-git-extras/scripts/git-publish-branch): publish an existing local branch to remote, and start tracking it (~same as above)
   #usage: git publish-branch [-d] <branch> [repository]
     pub = publish-branch
@@ -384,6 +395,16 @@
     ssi = stash --patch
   #stash a single file; use -m for a comment
     ssf = stash push
+  #stash multiple selected files (requires fzf: https://github.com/junegunn/fzf)
+    sssf = "!f() { \
+      files=$(git status --porcelain | awk '{print $2}' | fzf -m); \
+      [ -n \"$files\" ] && git stash push -m \"selective stash\" -- $files; \
+    }; f"
+  #stash multiple selected files with a custom message (requires fzf: https://github.com/junegunn/fzf)
+    sssfc = "!f() { \
+      files=$(git status --porcelain | awk '{print $2}' | fzf -m); \
+      [ -n \"$files\" ] && { echo -n 'Stash message: '; read msg; git stash push -m \"$msg\" -- $files; }; \
+    }; f"
   #drop the [last item] in stash
     ssdr = stash drop
   #drop a specific stash index (as listed with 'stash list')
@@ -667,7 +688,7 @@
   numbered = auto
 [diff]
   mnemonicprefix = true
-  tool = bc4
+  tool = bcomp
 [difftool]
   prompt = false
 [difftool "bc4"]
@@ -684,13 +705,13 @@
   support = support-
   versiontag = v
 [merge]
-  tool = bc4
+  tool = bcomp
 [mergetool]
   prompt = false
   keepBackup = false
 [mergetool "bc4"]
   trustexitcode = true
-  # requires "Install Command Line Tools" in bc4
+  # requires "Install Command Line Tools" in bcomp
   cmd = /usr/local/bin/bcomp \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 [mergetool "vim"]
   trustexitcode = true
